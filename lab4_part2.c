@@ -1,5 +1,5 @@
 // Name:  Jared Peter-Contesse & Spencer Shaw
-// Lab 3 Part 2
+// Lab 4 Part 2
 // Description: 
 
 #include <stdio.h>

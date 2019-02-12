@@ -49,8 +49,4 @@ typedef struct {
     u08 right;
 }line_data_t;
 
-float pow2(float x){
-    return x * x;
-}
-
 #endif
