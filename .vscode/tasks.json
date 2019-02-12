@@ -1,0 +1,31 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "part1",
+            "type": "shell",
+            "command": "make part1"
+        },
+        {
+            "label": "part2",
+            "type": "shell",
+            "command": "make part2"
+        },
+        {
+            "label": "part3",
+            "type": "shell",
+            "command": "make part3"
+        },
+        {
+            "label": "net",
+            "type": "shell",
+            "command": "make net",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        }
+    ]
+}
