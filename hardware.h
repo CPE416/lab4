@@ -47,6 +47,10 @@ void set_motors(motor_command_t motors){
     set_servo(MOTOR_LEFT, ( motors.left * 0.3333 ) + 127);
     set_servo(MOTOR_RIGHT, ((0 - motors.right) * 0.3333 ) + 127);
 }
+void motors(int left, int right){
+    set_servo(MOTOR_LEFT, ( left * 0.3333 ) + 127);
+    set_servo(MOTOR_RIGHT, ((0 - right) * 0.3333 ) + 127);
+}
 
 void halt(){
     motor(MOTOR_LEFT, 0);

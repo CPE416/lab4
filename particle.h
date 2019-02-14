@@ -1,7 +1,7 @@
 #ifndef PARTICLE_H
 #define PARTICLE_H
 
-// #include <math.h>
+#include <math.h>
 #include <stdlib.h>
 #include <time.h>
 
@@ -10,6 +10,7 @@
 #define random (rand() / RAND_MAX)
 
 typedef struct {
+    float position;
     float weight;
 }particle_t;
 
