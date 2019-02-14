@@ -2,9 +2,10 @@
 #define ENCODER_H
 
 #include "globals.h"
+#include "delay.h"
 #include "hardware.h"
 
-#define ROTATE_TICKS 30
+#define ROTATE_TICKS 10
 
 volatile uint16_t left_encoder = 0;
 volatile uint16_t right_encoder = 0;
@@ -36,20 +37,31 @@ void init_encoder() {
     reset_enocders();
 }
 
+void print_encoders(){
+    clear_screen();
+    lcd_cursor(0, 0);
+    print_2(left_encoder, right_encoder);
+}
+
 void forward(int ticks){
     motors(20, 20);
     reset_enocders();
-    while(left_encoder < ticks && right_encoder < ticks){}
+    while(left_encoder < ticks && right_encoder < ticks){
+        print_encoders();
+        delay_ms(50);
+    }
     motors(0, 0);
 }
 
 void rotate_90(){
-    motors(10, -10);
-     reset_enocders();
-    while(left_encoder < ROTATE_TICKS){}
+    motors(30, -30);
+    reset_enocders();
+    while(left_encoder < ROTATE_TICKS && right_encoder < ROTATE_TICKS){
+        print_encoders();
+        delay_ms(50);
+    }
     motors(0, 0);
 }
-
 
 ISR(PCINT0_vect) {
    left_encoder++;  //increment left encoder

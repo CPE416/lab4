@@ -35,6 +35,7 @@ line_data_t read_line_sensor(){
     return data;
 }
 
+
 void motor(u08 num, int speed){
     if (num == MOTOR_RIGHT){
         set_servo(MOTOR_RIGHT, ((0 - speed) * 0.3333 ) + 127);
@@ -57,13 +58,26 @@ void halt(){
     motor(MOTOR_RIGHT, 0);
 }
 
+u08 get_btn2(){
+    return !digital(BTN2_PIN);
+}
+
+void start_screen(char *str){
+    halt();
+    lcd_cursor(0, 0);
+    print_string(str);
+    lcd_cursor(0, 1);
+    print_string(str + 8);
+    //Button Press Before Start
+    while((get_btn() == 0) && (get_btn2() == 0)){
+        delay_ms(1);
+    }
+}
+
 u08 poll_analog_pin(u08 pin_num){
     return analog(pin_num);
 }
 
-u08 get_btn2(){
-    return !digital(BTN2_PIN);
-}
 
 void print_4(u08 a, u08 b, u08 c, u08 d){
     clear_screen();

@@ -12,11 +12,13 @@
 // Settings
 #define DELAY_MS 50 // Delay time for loop
 
+char *lab4_str = "Lab4, press to start";
+
 int main(void)
 {
     init();
     init_encoder();
-    halt();
+    start_screen(lab4_str);
 
     localize_then_kill();
 
