@@ -14,11 +14,13 @@
 #define LINE_SENSOR_RIGHT 3
 #define LINE_SENSOR_LEFT 2
 #define DISTANCE_SENSOR 5
+#define ENCODER_SENSOR 4
 
 void poll_linesensor(u08 pin_num);
 void poll_photodiode(u08 pin_num);
 void print_data(u08 count, u08 vals);
 void poll_distance(u08 pin_num);
+void poll_encoder(u08 pin_num);
 
 int main(void)
 {
@@ -59,7 +61,7 @@ int main(void)
 
 		// delay_ms(ERROR_CHECK_DELAY);
 
-		poll_distance(DISTANCE_SENSOR);
+		poll_distance(ENCODER_SENSOR);
 		delay_ms(200);
 
 	}
@@ -81,5 +83,9 @@ void print_data(u08 count, u08 vals){
 }
 
 void poll_distance(u08 pin_num){
+	print_data(pin_num, analog(pin_num));
+}
+
+void poll_encoder(u08 pin_num){
 	print_data(pin_num, analog(pin_num));
 }
