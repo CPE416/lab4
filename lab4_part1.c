@@ -8,9 +8,9 @@
 #include "hardware.h"
 #include "line_follow_pid.h"
 #include "monte.h"
+#include "kill.h"
 
-// Settings
-#define DELAY_MS 50 // Delay time for loop
+#define RAND_SEED (time(NULL))
 
 char *lab4_str = "Lab4, press to start";
 
@@ -18,9 +18,13 @@ int main(void)
 {
     init();
     init_encoder();
+
+    srand(RAND_SEED);
+
     start_screen(lab4_str);
 
-    localize_then_kill();
+    localize();
+    kill();
 
     // line_data_t line_data;
     // motor_command_t motors;

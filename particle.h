@@ -5,15 +5,24 @@
 #include <stdlib.h>
 #include <time.h>
 
-#define RAND_SEED (time(NULL))
-
-#define random (rand() / RAND_MAX)
+#define RANDOM (rand() / RAND_MAX)
 
 typedef struct {
     float position;
-    float weight;
 }particle_t;
 
+particle_t generate_particle(){
+    particle_t p;
+    p.position = RANDOM;
+    return p;
+}
+
+
+void init_particle_array(particle_t *particle_array, const int num_particles){
+    for (int i = 0; i < num_particles; i++){
+        particle_array[i] = generate_particle();
+    }
+}
 
 
 #endif
