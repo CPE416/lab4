@@ -4,7 +4,7 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 
-// Custum delay lib
+// Custom libs
 #include "delay.h"
 #include "hardware.h"
 #include "line_follow_pid.h"
