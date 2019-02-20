@@ -2,6 +2,8 @@
 // block locations (counterclockwise in order)
 // target block (block number to knock over)
 
+
+
 #ifndef BLOCK_LAYOUT_H
 #define BLOCK_LAYOUT_H
 
@@ -11,13 +13,13 @@
 #define BLOCK_FUDGE_FACTOR (10.56)
 
 typedef struct { 
-    u08 num_blocks; // 3 to 5 blocks
-    float block_locations[5]; 
-    u08 target_block;
-} layout_t;
+    u08 num_blocks;             // 3 to 5 blocks
+    u08 target_block;           // 1 to num_blocks position
+    float block_locations[5];   // 
+} block_layout_t;
 
-layout_t generate_layout(const u08 num_blocks, float *block_locations, const u08 target_block){
-    layout_t l;
+block_layout_t generate_layout(const u08 num_blocks, float *block_locations, const u08 target_block){
+    block_layout_t l;
     l.num_blocks = num_blocks;
 
     for  (int i = 0; i < num_blocks; i++){
@@ -27,7 +29,7 @@ layout_t generate_layout(const u08 num_blocks, float *block_locations, const u08
     l.target_block = target_block;
 }
 
-bool is_block(layout_t layout, const float location){
+bool is_block(block_layout_t layout, const float location){
     float low_end = location - BLOCK_FUDGE_FACTOR;
     float high_end = location + BLOCK_FUDGE_FACTOR;
     for (int i = 0; i < layout.num_blocks; i++){
