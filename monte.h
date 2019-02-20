@@ -2,7 +2,7 @@
 #define MONTE_H
 
 #include "particle.h"
-#include "kill.h"
+//#include "kill.h"
 
 #define NUM_PARTICLES 100
 
