@@ -3,18 +3,20 @@
 
 #include "defs.h"
 #include "particle.h"
-#include "monte.h"
 
-void localize(){
+#define TICKS (10)
+
+void localize(block_layout_t layout){
     particle_t particle_array[NUM_PARTICLES];
+
     init_particle_array(particle_array, NUM_PARTICLES);
+    // move_robot(TICKS);
+    run_motion_model(particle_array, TICKS);
 
-    run_motion_model(particle_array, ticks);
-
-    u08 distnace = read_prox_sensor();
+    u08 distance = read_prox_sensor();
     u08 robot_has_block = prox_has_block(distance);
 
-    recalculate_weights(particle_array, robot_has_block);
+    recalculate_weights(layout, particle_array, robot_has_block);
 
     
 }

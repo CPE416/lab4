@@ -27,16 +27,17 @@ block_layout_t generate_layout(const u08 num_blocks, float *block_locations, con
     }
 
     l.target_block = target_block;
+    return l;
 }
 
-bool is_block(block_layout_t layout, const float location){
+u08 is_block(block_layout_t layout, const float location){
     float low_end = location - BLOCK_FUDGE_FACTOR;
     float high_end = location + BLOCK_FUDGE_FACTOR;
     for (int i = 0; i < layout.num_blocks; i++){
         if (layout.block_locations[i] > low_end && layout.block_locations[i] < high_end){
-            return true;
+            return TRUE;
         }
-        return false;
+        return FALSE;
     }
 }
 

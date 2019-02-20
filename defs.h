@@ -1,10 +1,10 @@
-#ifndef GLOBALS_H
-#define GLOBALS_H
-typedef unsigned char u08;
-#endif
-
 #ifndef DEFS_H
 #define DEFS_H
+
+typedef unsigned char u08;
+
+#define TRUE (1)
+#define FALSE (0)
 
 
 #define U08_MIN 0
@@ -33,6 +33,10 @@ typedef unsigned char u08;
 #define LINE_SENSOR_RIGHT_MAX U08_MAX
 #define LINE_SENSOR_LEFT_MIN U08_MIN
 #define LINE_SENSOR_LEFT_MAX U08_MAX
+
+#ifndef M_PI
+    #define M_PI 3.14152653
+#endif
 
 typedef struct {
     u08 left;

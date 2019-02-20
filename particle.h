@@ -5,6 +5,9 @@
 #include <stdlib.h>
 #include <time.h>
 
+#include "defs.h"
+#include "block_layout.h"
+
 #define DISTANCE_THRESHHOLD (60)
 
 #define NUM_PARTICLES (100)
@@ -38,7 +41,8 @@ float ticks_to_degrees(int ticks){
 }
 
 float generate_gaussian_value(){
-    return sqrt(-2 * log(RAND)) * cos(2*M_PI*RAND);
+   
+    return sqrt(-2 * log(RAND)) * cos(2 * M_PI * RAND);
 }
 
 void run_motion_model(particle_t *particle_array, int ticks){
@@ -54,18 +58,18 @@ u08 prox_has_block(u08 distance){
    return distance > DISTANCE_THRESHHOLD;
 }
  
-float run_sensor_model(float particle_location, u08 robot_has_block){
-    if (robot_has_block && is_block(particle_location)){
+float run_sensor_model(block_layout_t layout, float particle_location, u08 robot_has_block){
+    if (robot_has_block && is_block(layout, particle_location)){
         return positive_trap_model();
     } else {
         return inverse_trap_model();
     }
 }
 
-void recalculate_weights(particle_t *particle_array, u08 robot_has_block){
+void recalculate_weights(block_layout_t layout, particle_t *particle_array, u08 robot_has_block){
     for (int i = 0; i < NUM_PARTICLES; i++){
         particle_t particle = particle_array[i]; 
-        particle_array[i].weight = run_sensor_model(particle.position, robot_has_block);
+        particle_array[i].weight = run_sensor_model(layout, particle.position, robot_has_block);
     }
 }
 
@@ -88,7 +92,7 @@ void copy_particle_array(particle_t *old_particle_arrray, particle_t *new_partic
     }
 }
 
-void resample_particles(particle_t *particle_arrray){
+void resample_particles(block_layout_t layout, particle_t *particle_arrray){
     int new_array_index = 0;
     particle_t new_particle_array[NUM_PARTICLES];
     for(int i = 0; i < NUM_PARTICLES; i++){

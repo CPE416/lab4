@@ -78,8 +78,6 @@ part4: lab4_part4.c $(wildcard $(BOARD_LIB)/*.c)
 test_hardware: test_hardware.c $(wildcard $(BOARD_LIB)/*.c)
 	$(CC) $(BFLAGS) -O2 -o main.elf test_hardware.c $(wildcard $(BOARD_LIB)/*.c)
 	make prep
-simulation: simulation.c 
-	gcc $(CFLAGS) -o simulation simulation.c 
 
 prep:
 	avr-objcopy -O ihex main.elf main.hex
