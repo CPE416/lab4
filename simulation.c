@@ -5,41 +5,36 @@
 #include <stdio.h>
 
 // Custum delay lib
-#include "hardware.h"
-#include "line_follow_pid.h"
+//#include "hardware.h"
+//#include "line_follow_pid.h"
 #include "monte.h"
-#include "kill.h"
+// #include "kill.h"
 
 #define PARTICLE_NUM 100
 #define STANDARD_DEVIATION 1
 
-typedef struct {
-	float a;
-	float b;
-	float c;
-	float d;
-} trap_prob_t;
+int checkarg (int argc, char *argv[]);
 
-trap_prob_t init_trap_prob(float a, float b, float c, float d){
-	trap_prob_t trap;
-    trap.a = a;
-    trap.b = b;
-    trap.c = c;
-    trap.d = d;
-    return trap;
-}
-
-float calc_prob(trap_prob_t trap, float x){
-	float u = 2/(trap.d + trap.c - trap.b - trap.a);
-	if(x < trap.b){
-		float b
-	}else if(x < trap.c){
-
-	}else{
-
+int main(int argc, char *argv[]){
+	int check = checkarg(argc,argv);
+	if(check == -1){
+		return 0;
 	}
 }
 
-int main(void){
-
+/* checks for correct number of arguments */
+int checkarg (int argc, char *argv[]){
+	if(argc < 6){
+		printf("usage: simulation [block num 3-5] [target block 0-block num] 
+				[block positon 1] ... [block positon block num]\n");
+		return -1;
+	}
+		if(atoi(argv[2])){
+			print_top_val = atoi(argv[2]);
+			currentarg = 3;
+			return 0;
+		}else{
+			printf("usage: fw [-n num] [ file1 [ file 2 ...] ]\n");
+			return -1;
+		}
 }
