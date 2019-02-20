@@ -5,7 +5,7 @@
 #include "delay.h"
 #include "hardware.h"
 
-#define ROTATE_TICKS 10
+#define ROTATE_TICKS 32
 
 volatile uint16_t left_encoder = 0;
 volatile uint16_t right_encoder = 0;
@@ -17,7 +17,7 @@ void reset_right_encoder(){
     right_encoder = 0;
 }
 
-void reset_enocders(){
+void reset_encoders(){
     reset_left_encoder();
     reset_right_encoder();
 }
@@ -34,7 +34,7 @@ void init_encoder() {
     PORTE |= _BV(PE6);
     PORTB |= _BV(PB5);
 
-    reset_enocders();
+    reset_encoders();
 }
 
 void print_encoders(){
@@ -45,7 +45,7 @@ void print_encoders(){
 
 void forward(int ticks){
     motors(20, 20);
-    reset_enocders();
+    reset_encoders();
     while(left_encoder < ticks && right_encoder < ticks){
         print_encoders();
         delay_ms(50);
@@ -55,7 +55,7 @@ void forward(int ticks){
 
 void rotate_90(){
     motors(30, -30);
-    reset_enocders();
+    reset_encoders();
     while(left_encoder < ROTATE_TICKS && right_encoder < ROTATE_TICKS){
         print_encoders();
         delay_ms(50);

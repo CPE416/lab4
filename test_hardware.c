@@ -8,6 +8,8 @@
 #include "delay.h"
 #include "hardware.h"
 #include "line_follow_pid.h"
+#include "globals.h"
+#include "encoder.h"
 
 #define PHOTO_DIODE_RIGHT 0
 #define PHOTO_DIODE_LEFT 1
@@ -27,6 +29,8 @@ int main(void)
 	init();
     motor(0, 0);
     motor(1, 0);
+
+    
     
  //    int _error[HISTORY_LENGTH] = {0};	
 	// struct pid _pid = {_error, P_TERM, I_TERM, D_TERM};
@@ -34,9 +38,32 @@ int main(void)
 	// int _motors[2] = {0,0};
 	// motor_command_t motors;
 
+    clear_screen();
+    print_string("Test");
+
 	while((get_btn() == 0) && (get_btn2() == 0)){
 		delay_ms(1);
 	}
+
+	// Test Encoders Forward
+	// init_encoder();
+	// while(1){
+	// 	forward(50);
+	// 	delay_ms(500);
+	// }
+
+	// Test Encoders Turn
+	init_encoder();
+	while(1){
+		rotate_90();
+		delay_ms(2000);
+	}
+
+	// Test Distance Sensor
+	// while(1){
+	// 	poll_distance(DISTANCE_SENSOR);
+	// 	delay_ms(200);
+	// }
 
 	while(1){
 		// clear_screen();
@@ -61,8 +88,9 @@ int main(void)
 
 		// delay_ms(ERROR_CHECK_DELAY);
 
-		poll_distance(ENCODER_SENSOR);
-		delay_ms(200);
+		
+
+		
 
 	}
 }

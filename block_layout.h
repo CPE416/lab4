@@ -5,7 +5,6 @@
 #ifndef BLOCK_LAYOUT_H
 #define BLOCK_LAYOUT_H
 
-
 #include "defs.h"
 
 #define MAX_BLOCKS (5)

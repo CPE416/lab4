@@ -9,6 +9,7 @@
 
 typedef struct {
     float position;
+    float weight;
 }particle_t;
 
 particle_t generate_particle(){

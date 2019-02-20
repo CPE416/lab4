@@ -21,6 +21,7 @@ void print_training4(int count1, int count2);
 void read_accel(u08 *horizontal);
 void print_target_block(u08 num);
 void print_num_block(u08 num);
+void print_block_info(u08 num_block, u08 target_block);
 u08 get_target_block(u08 num_block);
 u08 get_num_block();
 
@@ -32,10 +33,10 @@ int main(void)
     u08 num_block;
     u08 target_block;
     
-    line_data_t line_data;
-    motor_command_t motors;
-    motors.left = 0;
-    motors.right = 0;
+    //line_data_t line_data;
+    //motor_command_t motors;
+    //motors.left = 0;
+    //motors.right = 0;
     halt();
 
 
@@ -47,13 +48,19 @@ int main(void)
         delay_ms(1);
     }
     //Button Press Delay before start
-    delay_ms(100);
+    delay_ms(500);
 
     //Choose Number of Blocks
     num_block = get_num_block();
 
+    //Button Press Delay before start
+    delay_ms(500);
+
     //Choose Target Block
     target_block = get_target_block(num_block);
+
+    //Print User input
+    print_block_info(num_block, target_block);
 
     //Loop until finished
     while (1){
@@ -79,7 +86,7 @@ u08 get_num_block(){
                 }
             }
         }
-        delay_ms(50);
+        delay_ms(500);
     }
     return block_num;
 }
@@ -102,7 +109,7 @@ u08 get_target_block(u08 num_block){
                 }
             }
         }
-        delay_ms(50);
+        delay_ms(500);
     }
     return block_num;
 }
@@ -119,6 +126,15 @@ void print_target_block(u08 num){
     print_string("Target");
     lcd_cursor(0, 1);
     print_num(num);
+}
+
+void print_block_info(u08 num_block, u08 target_block){
+    clear_screen();
+    print_string("Blocks:");
+    print_num(num_block);
+    lcd_cursor(0, 1);
+    print_string("Target:");
+    print_num(target_block);
 }
 
 void read_accel(u08 *horizontal)
