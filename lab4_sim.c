@@ -46,14 +46,7 @@ int checkarg (int argc, char *argv[], block_layout_t *block){
 		return -1;
 	}
 	for(int i = 0; i < block->num_blocks; i++){
-		if((block->block_locations[i] = atoi(argv[i])))
+		if((block->block_locations[i] = atoi(argv[i]))){}
 	}
-		if(atoi(argv[2])){
-			
-			currentarg = 3;
-			return 0;
-		}else{
-			printf("usage: fw [-n num] [ file1 [ file 2 ...] ]\n");
-			return -1;
-		}
+		
 }
