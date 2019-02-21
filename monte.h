@@ -5,8 +5,21 @@
 #include "particle.h"
 
 #define TICKS (10)
+// Probability Functions for block
+#define BLOCK_VAL_A 50
+#define BLOCK_VAL_B 90
+#define BLOCK_VAL_C 250
+#define BLOCK_VAL_D 255
+
+// Probability Function for Space
+#define SPACE_VAL_A 0
+#define SPACE_VAL_B 1
+#define SPACE_VAL_C 40
+#define SPACE_VAL_D 60
+
 
 void localize(block_layout_t layout, u08 distance){
+
     particle_t particle_array[NUM_PARTICLES];
 
     init_particle_array(particle_array, NUM_PARTICLES);
@@ -17,7 +30,6 @@ void localize(block_layout_t layout, u08 distance){
 
     recalculate_weights(layout, particle_array, robot_has_block);
 
-    
 }
 
 // Struct and Functions for the Trapezoid Probability Density Function

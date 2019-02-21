@@ -65,7 +65,7 @@ float run_sensor_model(block_layout_t layout, float particle_location, u08 senso
     } else {
         trap = space_trap();
     }
-    return calc_trap(trap, sensor_val)
+    return calc_trap(trap, sensor_val);
 }
 
 void recalculate_weights(block_layout_t layout, particle_t *particle_array, u08 robot_has_block){
