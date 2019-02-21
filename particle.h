@@ -7,6 +7,7 @@
 
 #include "defs.h"
 #include "block_layout.h"
+#include "trap.h"
 
 #define DISTANCE_THRESHHOLD (60)
 
