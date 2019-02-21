@@ -91,8 +91,10 @@ else
 program: program_mac
 endif
 
-sim: lab4_sim.c
+build_sim: lab4_sim.c *.h
 	gcc $(CFLAGS) -g -o lab4_sim lab4_sim.c -lm
+
+sim1: build_sim
 	./lab4_sim 4 3 45 90 135 225 
 
 # Detect USB device
