@@ -2,18 +2,19 @@
 // Simulator
 // Description: 
 
+#include <stdlib.h>
 #include <stdio.h>
 
 #include "monte.h"
 #include "defs.h"
 #include "block_layout.h"
+#include "sim.h"
 
-#define PARTICLE_NUM (100)
+#define PARTICLE_NUM (10)
 #define STANDARD_DEVIATION (1)
-#define ITERATIONS (1)
+#define ITERATIONS (36)
 
 int checkarg (int argc, char *argv[], block_layout_t *block);
-int read_prox_sensor(block_layout_t layout, float x);
 
 int main(int argc, char *argv[]){
 	srand(RAND_SEED);
@@ -25,17 +26,19 @@ int main(int argc, char *argv[]){
 		return 0;
 	}
 
-	float location = 0;
+	float location = RANDOM_PARTICLE_POS;
+
+	print_block_art(block);
 
     particle_t particle_array[NUM_PARTICLES];
     init_particle_array(particle_array);
 
-	print_particle_array(particle_array);
-
 	for (int i = 0; i < ITERATIONS; i++){
-		u08 distance = read_prox_sensor(block, location);
-		localize(block, particle_array, distance);
-		print_particle_array(particle_array);
+	printf("Location: %f\n", location);
+		u08 distance_reading = read_prox_sensor(block, location);
+		localize(block, particle_array, distance_reading);
+		// print_particle_array(particle_array);
+		location = increment_location(location);
 	}
 }
 
@@ -70,16 +73,7 @@ int checkarg (int argc, char *argv[], block_layout_t *block){
 		}
 	}
 	print_block_layout(block);
-	// print_block_art(*block);
 	return 1;
 }
 
-int read_prox_sensor(block_layout_t layout, float x){
-	for (int i = 0; i < layout.num_blocks; i++){
-		if ((x > (layout.block_locations[i] - BLOCK_FUDGE_FACTOR)) && 
-		    ( x < (layout.block_locations[i] + BLOCK_FUDGE_FACTOR))){
-				return TRUE;
-		}
-	}
-	return FALSE;
-}
+

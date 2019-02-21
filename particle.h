@@ -11,13 +11,13 @@
 
 #define DISTANCE_THRESHHOLD (60)
 
-#define NUM_PARTICLES (100)
+#define NUM_PARTICLES (10)
 #define RATIO_KEEP_PARTICLES (0.95)
 
 #define TICKS_PER_DEGREE (2.0)
 #define RAND_SEED (time(NULL))
 #define RAND (rand() / RAND_MAX)
-#define RANDOM_PARTICLE_POS (360.0 * (rand() / RAND_MAX))
+#define RANDOM_PARTICLE_POS ((360.0 * rand()) / RAND_MAX)
 
 typedef struct {
     float position;
@@ -28,6 +28,8 @@ particle_t generate_particle(){
     particle_t p;
     p.position = RANDOM_PARTICLE_POS;
     p.weight = 0;
+
+    printf("Generated particle with position: %f\n", p.position);
     return p;
 }
 
@@ -37,13 +39,11 @@ void init_particle_array(particle_t *particle_array){
     }
 }
 
-
 float ticks_to_degrees(int ticks){
     return ticks / TICKS_PER_DEGREE;
 }
 
 float generate_gaussian_value(){
-   
     return sqrt(-2 * log(RAND)) * cos(2 * M_PI * RAND);
 }
 
@@ -67,7 +67,9 @@ float run_sensor_model(block_layout_t layout, float particle_location, u08 senso
     } else {
         trap = space_trap();
     }
-    return calc_trap(trap, sensor_val);
+    float new_weight = calc_trap(trap, sensor_val);
+    // printf("Calculated new weight: %f\n", new_weight);
+    return new_weight;
 }
 
 void recalculate_weights(block_layout_t layout, particle_t *particle_array, u08 robot_has_block){
@@ -108,11 +110,10 @@ void resample_particles(block_layout_t layout, particle_t *particle_array){
         new_array_index++;
     }
     copy_particle_array(new_particle_array, particle_array);
-
 }
 
 void print_particle(particle_t p){
-    printf("p@ %5.1f\tw@ %6.3f\n", p.position, p.weight);
+    printf("p @ %5.1f     w @ %5.3f\n", p.position, p.weight);
 }
 
 void print_particle_array(particle_t *p_array){
