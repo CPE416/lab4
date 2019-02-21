@@ -93,6 +93,7 @@ endif
 
 sim: lab4_sim.c
 	gcc $(CFLAGS) -g -o lab4_sim lab4_sim.c -lm
+	./lab4_sim 4 3 45 90 135 225 
 
 # Detect USB device
 # Pipe all devices to file

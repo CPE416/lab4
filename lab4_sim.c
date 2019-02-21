@@ -33,8 +33,7 @@ int main(int argc, char *argv[]){
 int checkarg (int argc, char *argv[], block_layout_t *block){
 	//Check argument length
 	if(argc < 6){
-		printf("usage: simulation [block num (3-5)] [target block (1-block num)]\
-				[block positon (1)] ... [block positon (block num)]\n");
+		printf("usage: simulation [block num (3-5)] [target block (1-block num)] [block positon (1)] ... [block positon (block num)]\n");
 		return -1;
 	}
 	//Check block num number
@@ -61,6 +60,9 @@ int checkarg (int argc, char *argv[], block_layout_t *block){
 		}
 	}
 	print_block_layout(block);
+	
+	block_layout_t layout = *block;
+	print_block_art(layout);
 	return 1;
 }
 
