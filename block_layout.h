@@ -59,13 +59,13 @@ void print_block_layout(block_layout_t *block){
 }
 
 void print_block_art(block_layout_t layout){
-    char *row0 = "        90      \n";
-    char *row1 = "   135  __  45  \n";
-    char *row2 = "      /    \\    \n";
-    char *row3 = " 180 |      | 0 \n";
-    char *row4 = "      \\ __ /    \n";
-    char *row5 = "   225      315 \n";
-    char *row6 = "        270     \n";
+    char *row0 = "       90     \n";
+    char *row1 = "  135  __  45 \n";
+    char *row2 = "     /    \\   \n";
+    char *row3 = "180 |      | 0\n";
+    char *row4 = "     \\ __ /   \n";
+    char *row5 = "  225      315\n";
+    char *row6 = "       270    \n";
     for (int i = 0; i < layout.num_blocks; i++){
         switch (layout.block_locations[i]){
             case 0:
