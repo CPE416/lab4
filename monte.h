@@ -6,6 +6,18 @@
 
 #define TICKS (10)
 
+// Probability Functions for block
+#define BLOCK_VAL_A 50
+#define BLOCK_VAL_B 90
+#define BLOCK_VAL_C 250
+#define BLOCK_VAL_D 255
+
+// Probability Function for Space
+#define SPACE_VAL_A 0
+#define SPACE_VAL_B 1
+#define SPACE_VAL_C 40
+#define SPACE_VAL_D 60
+
 void localize(block_layout_t layout){
     particle_t particle_array[NUM_PARTICLES];
 

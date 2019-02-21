@@ -53,17 +53,17 @@ int main(void)
 	// }
 
 	// Test Encoders Turn
-	init_encoder();
-	while(1){
-		rotate_90();
-		delay_ms(2000);
-	}
+	// init_encoder();
+	// while(1){
+	// 	rotate_90();
+	// 	delay_ms(2000);
+	// }
 
 	// Test Distance Sensor
-	// while(1){
-	// 	poll_distance(DISTANCE_SENSOR);
-	// 	delay_ms(200);
-	// }
+	while(1){
+		poll_distance(DISTANCE_SENSOR);
+		delay_ms(200);
+	}
 
 	while(1){
 		// clear_screen();
