@@ -59,41 +59,55 @@ void print_block_layout(block_layout_t *block){
 }
 
 void print_block_art(block_layout_t layout){
-    char *row0 = "       90     \n";
-    char *row1 = "  135  __  45 \n";
-    char *row2 = "     /    \\   \n";
-    char *row3 = "180 |      | 0\n";
-    char *row4 = "     \\ __ /   \n";
-    char *row5 = "  225      315\n";
-    char *row6 = "       270    \n";
-    for (int i = 0; i < layout.num_blocks; i++){
-        switch (layout.block_locations[i]){
+    char c90char = '_';
+    char c45char = '\\';
+    char c0char = '|';
+    char c135char = '/';
+    char c180char = '|';
+    char c225char = '\\';
+    char c270char = '_';
+    char c315char = '/';
+
+    for(int i = 0; i < layout.num_blocks; i++){
+        int location = layout.block_locations[i];
+        switch(location){
             case 0:
-                row3[ASCII_POS_5] = B;
+                c0char = 'B';
                 break;
             case 45:
-                row2[ASCII_POS_4] = B;
-             case 90:
-                row1[ASCII_POS_3] = B;
+                c45char = 'B';
+                break;
+            case 90:
+                c90char = 'B';
                 break;
             case 135:
-                row2[ASCII_POS_2] = B;
+                c135char = 'B';
+                break;
             case 180:
-                row3[ASCII_POS_1] = B;
+                c180char = 'B';
                 break;
             case 225:
-                row4[ASCII_POS_2] = B;
+                c225char = 'B';
+                break;
             case 270:
-                row5[ASCII_POS_3] = B;
+                c270char = 'B';
                 break;
             case 315:
-                row4[ASCII_POS_4] = B;
+                c315char = 'B';
                 break;
             default:
-                printf("Could not read block locations to print.\nExiting.\n");
+                break;
         }
     }
-    printf("%s%s%s%s%s%s%s", row0, row1, row2, row3, row4, row5, row6);
+    printf("        90        \n");
+    printf("   135  %c  45    \n", c90char);
+    printf("      %c   %c    \n", c135char, c45char);
+    printf(" 180 %c     %c 0 \n", c180char, c0char);
+    printf("      %c %c %c    \n", c225char, c270char, c315char);
+    printf("   225      315   \n");
+    printf("       270     \n");
+    
+    printf("\n");
 }
 
 #endif
