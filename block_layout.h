@@ -15,7 +15,7 @@
 typedef struct { 
     u08 num_blocks;             // 3 to 5 blocks
     u08 target_block;           // 1 to num_blocks position
-    float block_locations[5];   // 
+    float block_locations[5];   // 0 to 315 in increments of 45
 } block_layout_t;
 
 block_layout_t generate_layout(const u08 num_blocks, float *block_locations, const u08 target_block){

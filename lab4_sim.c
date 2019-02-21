@@ -26,6 +26,7 @@ int main(int argc, char *argv[]){
 	if(check == -1){
 		return 0;
 	}
+	
 }
 
 /* checks for correct number of arguments */
@@ -54,7 +55,7 @@ int checkarg (int argc, char *argv[], block_layout_t *block){
 
 	for(int i = 0; i < block->num_blocks; i++){
 		if((block->block_locations[i] = atoi(argv[3 + i])) < 0 || block->block_locations[i] > 315 
-			|| ((int) block->block_locations[i] % 45) != 0){
+			|| (block->block_locations[i] % 45) != 0){
 			printf("usage: block position must be between 0 and 315 in multiples of 45");
 			return -1;
 		}
