@@ -12,7 +12,7 @@
 #define STANDARD_DEVIATION 1
 
 int checkarg (int argc, char *argv[], block_layout_t *block);
-void print_block_layout(block_layout_t *block);
+int read_prox_sensor(block_layout_t layout, float x);
 
 int main(int argc, char *argv[]){
 
@@ -22,6 +22,11 @@ int main(int argc, char *argv[]){
 	if(check == -1){
 		return 0;
 	}
+
+
+	float location = 0;
+    u08 distance = read_prox_sensor(block, location);
+	localize(block, distance);
 }
 
 /* checks for correct number of arguments */
@@ -59,11 +64,12 @@ int checkarg (int argc, char *argv[], block_layout_t *block){
 	return 1;
 }
 
-void print_block_layout(block_layout_t *block){
-	printf("\n Block Count: %i", block->num_blocks);
-	printf("\n Target Block: %i", block->target_block);
-	for(int i = 0; i <block->num_blocks; i++){
-		printf("\n Block Position %i: %f", (i+1), block->block_locations[i]);
+int read_prox_sensor(block_layout_t layout, float x){
+	for (int i = 0; i < layout.num_blocks; i++){
+		if ((x > (layout.block_locations[i] - BLOCK_FUDGE_FACTOR)) && 
+		    ( x < (layout.block_locations[i] + BLOCK_FUDGE_FACTOR))){
+				return TRUE;
+		}
 	}
-	printf("\n\n");
+	return FALSE;
 }

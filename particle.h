@@ -58,12 +58,14 @@ u08 prox_has_block(u08 distance){
    return distance > DISTANCE_THRESHHOLD;
 }
  
-float run_sensor_model(block_layout_t layout, float particle_location, u08 robot_has_block){
-    if (robot_has_block && is_block(layout, particle_location)){
-        return positive_trap_model();
+float run_sensor_model(block_layout_t layout, float particle_location, u08 sensor_val){
+    trap_prob_t trap;
+    if (is_block(layout, particle_location)){
+        trap = block_trap();
     } else {
-        return inverse_trap_model();
+        trap = space_trap();
     }
+    return calc_trap(trap, sensor_val)
 }
 
 void recalculate_weights(block_layout_t layout, particle_t *particle_array, u08 robot_has_block){
