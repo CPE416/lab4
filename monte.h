@@ -8,11 +8,8 @@
 
 
 
-void localize(block_layout_t layout, u08 distance){
+void localize(block_layout_t layout, particle_t *particle_array, u08 distance){
 
-    particle_t particle_array[NUM_PARTICLES];
-
-    init_particle_array(particle_array, NUM_PARTICLES);
     // move_robot(TICKS);
     run_motion_model(particle_array, TICKS);
 

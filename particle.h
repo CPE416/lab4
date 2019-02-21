@@ -16,8 +16,8 @@
 
 #define TICKS_PER_DEGREE (2.0)
 #define RAND_SEED (time(NULL))
-#define RAND (2.0 * rand() / RAND_MAX)
-#define RANDOM (rand() / RAND_MAX)
+#define RAND (rand() / RAND_MAX)
+#define RANDOM_PARTICLE_POS (360.0 * (rand() / RAND_MAX))
 
 typedef struct {
     float position;
@@ -26,12 +26,13 @@ typedef struct {
 
 particle_t generate_particle(){
     particle_t p;
-    p.position = RANDOM;
+    p.position = RANDOM_PARTICLE_POS;
+    p.weight = 0;
     return p;
 }
 
-void init_particle_array(particle_t *particle_array, const int num_particles){
-    for (int i = 0; i < num_particles; i++){
+void init_particle_array(particle_t *particle_array){
+    for (int i = 0; i < NUM_PARTICLES; i++){
         particle_array[i] = generate_particle();
     }
 }
@@ -95,18 +96,28 @@ void copy_particle_array(particle_t *old_particle_arrray, particle_t *new_partic
     }
 }
 
-void resample_particles(block_layout_t layout, particle_t *particle_arrray){
+void resample_particles(block_layout_t layout, particle_t *particle_array){
     int new_array_index = 0;
     particle_t new_particle_array[NUM_PARTICLES];
     for(int i = 0; i < NUM_PARTICLES; i++){
-        int clone_times = calc_clone_weight(particle_arrray[i].weight);
-        clone_particle(new_particle_array, particle_arrray[i], clone_times, &new_array_index);
+        int clone_times = calc_clone_weight(particle_array[i].weight);
+        clone_particle(new_particle_array, particle_array[i], clone_times, &new_array_index);
     }
     while (new_array_index < NUM_PARTICLES){
         new_particle_array[new_array_index] = generate_particle();
         new_array_index++;
     }
-    copy_particle_array(new_particle_array, particle_arrray);
+    copy_particle_array(new_particle_array, particle_array);
+
+}
+
+void print_particle(particle_t p){
+    printf("p@ %5.1f\tw@ %6.3f\n", p.position, p.weight);
+}
+
+void print_particle_array(particle_t *p_array){
+    for (int i = 0; i < NUM_PARTICLES; i++)
+    print_particle(p_array[i]);
 }
 
 #endif

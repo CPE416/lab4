@@ -8,13 +8,15 @@
 #include "defs.h"
 #include "block_layout.h"
 
-#define PARTICLE_NUM 100
-#define STANDARD_DEVIATION 1
+#define PARTICLE_NUM (100)
+#define STANDARD_DEVIATION (1)
+#define ITERATIONS (1)
 
 int checkarg (int argc, char *argv[], block_layout_t *block);
 int read_prox_sensor(block_layout_t layout, float x);
 
 int main(int argc, char *argv[]){
+	srand(RAND_SEED);
 
 	block_layout_t block;
 
@@ -23,10 +25,18 @@ int main(int argc, char *argv[]){
 		return 0;
 	}
 
-
 	float location = 0;
-    u08 distance = read_prox_sensor(block, location);
-	localize(block, distance);
+
+    particle_t particle_array[NUM_PARTICLES];
+    init_particle_array(particle_array);
+
+	print_particle_array(particle_array);
+
+	for (int i = 0; i < ITERATIONS; i++){
+		u08 distance = read_prox_sensor(block, location);
+		localize(block, particle_array, distance);
+		print_particle_array(particle_array);
+	}
 }
 
 /* checks for correct number of arguments */
@@ -60,9 +70,7 @@ int checkarg (int argc, char *argv[], block_layout_t *block){
 		}
 	}
 	print_block_layout(block);
-	
-	block_layout_t layout = *block;
-	print_block_art(layout);
+	// print_block_art(*block);
 	return 1;
 }
 
