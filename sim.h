@@ -6,8 +6,8 @@
 #include "block_layout.h"
 #include "monte.h"
 
-float increment_location(float location){
-    float new_location = location + TICKS;
+float increment_location(float location, int ticks){
+    float new_location = location + ticks;
     if (new_location > 360.0){
         new_location -= 360.0;
     }
@@ -22,8 +22,8 @@ int read_prox_sensor(block_layout_t layout, float location){
 	// 	}
 	// }
 	// return FALSE;
-	u08 sensor_val = is_block(layout, location) * 120.0;
-	printf("Generated sensor value: %d\n", sensor_val);
+	u08 sensor_val = is_block(layout, location) * RAND * 255;
+	printf("Generated sensor value: %d   @ location: %5.1f\n", sensor_val, location);
 	return sensor_val;
 }
 
