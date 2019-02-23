@@ -11,7 +11,7 @@
 
 #define DISTANCE_THRESHHOLD (60)
 
-#define NUM_PARTICLES (8)
+#define NUM_PARTICLES (100)
 #define RATIO_KEEP_PARTICLES (0.9)
 
 #define TICKS_PER_DEGREE (2.0)
@@ -103,9 +103,8 @@ u08 prox_has_block(u08 distance){
    return distance > DISTANCE_THRESHHOLD;
 }
  
-float run_sensor_model(block_layout_t layout, float particle_location){
+float run_sensor_model(block_layout_t layout, u08 sensor_val, float particle_location){
     trap_prob_t trap;
-    u08 sensor_val = generate_prox_value(layout, particle_location); 
     if (is_block(layout, particle_location)){
         trap = block_trap();
         // printf("Using block sensor model\n");
@@ -119,11 +118,11 @@ float run_sensor_model(block_layout_t layout, float particle_location){
 }
 
 
-void recalculate_weights(block_layout_t layout, particle_t *particle_array, u08 robot_has_block){
+void recalculate_weights(block_layout_t layout, particle_t *particle_array, u08 sensor_val){
     // printf("Recalculating weights\n");
     float sum = 0;
     for (int i = 0; i < NUM_PARTICLES; i++){
-        particle_array[i].weight = run_sensor_model(layout, particle_array[i].position);
+        particle_array[i].weight = run_sensor_model(layout, sensor_val, particle_array[i].position);
         sum += particle_array[i].weight;
     }
     float factor = 1.0 / sum ;
@@ -134,7 +133,7 @@ void recalculate_weights(block_layout_t layout, particle_t *particle_array, u08 
 }
 
 int calc_clone_weight(float weight){
-    int count = (int) (weight * RATIO_KEEP_PARTICLES * ((float) NUM_PARTICLES));
+    int count = (int) (weight * ((float) NUM_PARTICLES) / RATIO_KEEP_PARTICLES);
     // printf("Clone count: %d from %f\n", count, weight);
     return count;
 }
@@ -151,11 +150,11 @@ void resample_particles(block_layout_t layout, particle_t *old_array){
     for(int i = 0; (i < NUM_PARTICLES) && (new_index < NUM_PARTICLES); i++){
         particle_t p = old_array[i];
         int clone_times = calc_clone_weight(p.weight);
-        printf("Resampled particle @ %5.1f w: %f, %d times\n", p.position, p.weight, clone_times);
-        for (int i = 0; (i < clone_times) && (new_index < NUM_PARTICLES); i++){
+        for (int clone_index = 0;(clone_index < clone_times) && (new_index < NUM_PARTICLES); clone_index++){
             new_array[new_index] = p;
-            new_index += 1;
+            new_index++;
         }
+        printf("Resampled particle @ %5.1f w: %4.3f, %d times\n", p.position, p.weight, clone_times);
     }
     printf("Resampled %d particles\n", new_index);
     for (int i = new_index; i < NUM_PARTICLES; i++){
@@ -163,6 +162,5 @@ void resample_particles(block_layout_t layout, particle_t *old_array){
     }
     copy_particle_array(new_array, old_array);
 }
-
 
 #endif
