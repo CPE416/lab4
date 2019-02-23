@@ -2,11 +2,16 @@
 // Lab 4 Part 2
 // Description: 
 
+// Full Ring Encoder Values:
+// Right: 480
+// Left: 240
+
 #include <stdio.h>
 
 #include "delay.h"
 #include "hardware.h"
 #include "line_follow_pid.h"
+#include "block_layout.h"
 
 // Settings
 #define DELAY_MS 100 // Delay time for control loop
@@ -21,17 +26,24 @@ void print_training4(int count1, int count2);
 void read_accel(u08 *horizontal);
 void print_target_block(u08 num);
 void print_num_block(u08 num);
-void print_block_info(u08 num_block, u08 target_block);
-u08 get_target_block(u08 num_block);
+void print_block_info(block_layout_t layout);
+void print_block_positions(block_layout_t layout);
+void print_position_block(int num, int count);
+u08 get_target_block(block_layout_t layout);
 u08 get_num_block();
+int get_position();
 
 int main(void)
 {
     init();
 
     // Variables
-    u08 num_block;
-    u08 target_block;
+    block_layout_t layout;
+
+    //Particle Variables
+    srand(RAND_SEED);
+    particle_t particle_array[NUM_PARTICLES];
+    init_particle_array(particle_array);
     
     //line_data_t line_data;
     //motor_command_t motors;
@@ -51,22 +63,36 @@ int main(void)
     delay_ms(500);
 
     //Choose Number of Blocks
-    num_block = get_num_block();
+    layout.num_blocks = get_num_block();
 
     //Button Press Delay before start
     delay_ms(500);
 
     //Choose Target Block
-    target_block = get_target_block(num_block);
+    layout.target_block = get_target_block(layout);
+
+    //Button Press Delay before start
+    delay_ms(500);
+
+    //Get Block Positions
+    for(int i = 0; i < layout.num_blocks; i++){
+        layout.block_locations[i] = get_position(i);
+        delay_ms(500);
+    }
 
     //Print User input
-    print_block_info(num_block, target_block);
+    print_block_info(layout);
+    delay_ms(1000);
+    print_block_positions(layout);
+    delay_ms(1000);
 
     //Loop until finished
     while (1){
 
     }
 }
+
+
 
 //Choose Number of Blocks
 u08 get_num_block(){
@@ -92,7 +118,7 @@ u08 get_num_block(){
 }
 
 //Choose Target Blocks
-u08 get_target_block(u08 num_block){
+u08 get_target_block(block_layout_t layout){
     u08 block_num = 1;
     u08 accel_data = 0;
     while((get_btn() == 0) && (get_btn2() == 0)){
@@ -100,7 +126,7 @@ u08 get_target_block(u08 num_block){
         read_accel(&accel_data);
         if(accel_data < 245){
             if(accel_data > 128){
-                if(block_num < num_block){
+                if(block_num < layout.num_blocks){
                     block_num++;
                 }
             }else if(accel_data > 10){
@@ -112,6 +138,29 @@ u08 get_target_block(u08 num_block){
         delay_ms(500);
     }
     return block_num;
+}
+
+int get_position(int i){
+    int position_num = 0;
+    u08 accel_data = 0;
+    
+    while((get_btn() == 0) && (get_btn2() == 0)){
+        print_position_block(position_num, i+1);
+        read_accel(&accel_data);
+        if(accel_data < 245){
+            if(accel_data > 128){
+                if(position_num < 315){
+                    position_num += 45;
+                }
+            }else if(accel_data > 10){
+                if(position_num > 0){
+                    position_num -= 45;
+                }
+            }
+        }
+        delay_ms(500);
+    }
+    return position_num;
 }
 
 void print_num_block(u08 num){
@@ -127,14 +176,33 @@ void print_target_block(u08 num){
     lcd_cursor(0, 1);
     print_num(num);
 }
+void print_position_block(int num, int count){
+    clear_screen();
+    print_string("Block ");
+    print_num(count);
+    print_string(":");
+    lcd_cursor(0, 1);
+    print_num(num);
+}
 
-void print_block_info(u08 num_block, u08 target_block){
+void print_block_info(block_layout_t layout){
     clear_screen();
     print_string("Blocks:");
-    print_num(num_block);
+    print_num(layout.num_blocks);
     lcd_cursor(0, 1);
     print_string("Target:");
-    print_num(target_block);
+    print_num(layout.target_block);
+}
+
+void print_block_positions(block_layout_t layout){
+    clear_screen();
+    for (int i = 0; i < layout.num_blocks; i++){
+        if (i == 2){
+            lcd_cursor(0, 1);
+        }
+        print_num(layout.block_locations[i]);
+        print_string("-");
+    }
 }
 
 void read_accel(u08 *horizontal)
