@@ -3,14 +3,14 @@
 
 // Probability Functions for block
 #define BLOCK_VAL_A (50.0)
-#define BLOCK_VAL_B (90.0)
-#define BLOCK_VAL_C (250.0)
+#define BLOCK_VAL_B (120.0) //(90.0)
+#define BLOCK_VAL_C (210.0) //(250.0)
 #define BLOCK_VAL_D (255.0)
 
 // Probability Function for Space
 #define SPACE_VAL_A (0.0)
-#define SPACE_VAL_B (1.0)
-#define SPACE_VAL_C (40.0)
+#define SPACE_VAL_B (15.0) //(1.0)
+#define SPACE_VAL_C (35) //(40.0)
 #define SPACE_VAL_D (60.0)
 
 // Struct and Functions for the Trapezoid Probability Density Function
@@ -23,25 +23,17 @@ typedef struct {
 	float max_height;
 } trap_prob_t;
 
-float calc_particle_width(trap_prob_t trap, const int num_particles){
-	float particle_width = trap.width / (float) num_particles;
-	// printf("Particle width: %f from trap width %f\n", particle_width, trap.width);
-	return  particle_width; 
-}
-
-float calc_trap(trap_prob_t trap, float x, int num_particles){
-	float particle_width = calc_particle_width(trap, num_particles);
-	printf("Max trap height: %f, particle_width: %f\n", trap.max_height, particle_width);
+float calc_trap(trap_prob_t trap, float x){
 	if(x < trap.a){
 		return 0.0;
 	}else if(x < trap.b){
 		float slope = (x - trap.a)/(trap.b - trap.a);
-		return (trap.max_height * slope * particle_width);
+		return (trap.max_height * slope);
 	}else if(x < trap.c){
-		return trap.max_height * particle_width;
+		return trap.max_height;
 	}else if(x < trap.d){
 		float slope = (trap.d - x)/(trap.d - trap.c);
-		return (trap.max_height * slope * particle_width);
+		return (trap.max_height * slope); 
 	}else{
 		return 0.0;
 	}

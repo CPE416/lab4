@@ -7,6 +7,8 @@
 #ifndef BLOCK_LAYOUT_H
 #define BLOCK_LAYOUT_H
 
+#include <math.h>
+
 #include "defs.h"
 
 #define ASCII_POS_1 (5)
@@ -44,6 +46,17 @@ u08 is_block(block_layout_t layout, const float location){
     for (int i = 0; i < layout.num_blocks; i++){
         if (layout.block_locations[i] > low_end && layout.block_locations[i] < high_end){
             return TRUE;
+        }
+    }
+    return FALSE;
+}
+
+float distance_to_block(block_layout_t layout, float location){
+    float low_end = location - BLOCK_FUDGE_FACTOR;
+    float high_end = location + BLOCK_FUDGE_FACTOR;
+    for (int i = 0; i < layout.num_blocks; i++){
+        if (layout.block_locations[i] > low_end && layout.block_locations[i] < high_end){
+            return abs(layout.block_locations[i] - location);
         }
     }
     return FALSE;
