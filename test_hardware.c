@@ -23,6 +23,7 @@ void poll_photodiode(u08 pin_num);
 void print_data(u08 count, u08 vals);
 void poll_distance(u08 pin_num);
 void poll_encoder(u08 pin_num);
+void print_distance_encoders(int sensor, int count1, int count2);
 
 int main(void)
 {
@@ -66,25 +67,46 @@ int main(void)
 	// }
 
 	// test Encoder Sensor with PID
+	// motor_command_t motors;
+	// line_data_t line_data;
+	// init_encoder();
+
+	// delay_ms(500);
+	// while(1){
+	// 	print_encoders();
+	// 	line_data = read_line_sensor();
+	// 	motors = compute_proportional(line_data.left, line_data.right);
+	// 	set_motors(motors);
+	// 	if((get_btn() == 1) || (get_btn2() == 1)){
+ 	//    	halt();
+ 	//      delay_ms(500);
+ 	//      while((get_btn() == 0) && (get_btn2() == 0)){
+ 	//        	delay_ms(1);
+ 	//   	}
+ 	//  }
+	// }
+
+	// test Distance Sensor with PID
 	motor_command_t motors;
 	line_data_t line_data;
 	init_encoder();
 
 	delay_ms(500);
 	while(1){
-		print_encoders();
+		
+		u08 dist_sensor = analog(DISTANCE_SENSOR);
+		print_distance_encoders(dist_sensor, left_encoder, right_encoder);
 		line_data = read_line_sensor();
 		motors = compute_proportional(line_data.left, line_data.right);
 		set_motors(motors);
 		if((get_btn() == 1) || (get_btn2() == 1)){
-        	halt();
-        	delay_ms(500);
-        	while((get_btn() == 0) && (get_btn2() == 0)){
-        		delay_ms(1);
-   	 		}
-    	}
+ 	   	halt();
+ 	     delay_ms(500);
+ 	     while((get_btn() == 0) && (get_btn2() == 0)){
+ 	       	delay_ms(1);
+ 	  	}
+ 	 }
 	}
-
 	
 
 	while(1){
@@ -138,4 +160,13 @@ void poll_distance(u08 pin_num){
 
 void poll_encoder(u08 pin_num){
 	print_data(pin_num, analog(pin_num));
+}
+
+void print_distance_encoders(int sensor, int count1, int count2){
+    clear_screen();
+    print_num(sensor);
+    lcd_cursor(0, 1);
+    print_num(count1);
+    lcd_cursor(4, 1);
+    print_num(count2);
 }

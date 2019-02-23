@@ -6,6 +6,10 @@
 // Right: 480
 // Left: 240
 
+// Block Length
+// Right 40
+// Left 20
+
 #include <stdio.h>
 
 #include "delay.h"
