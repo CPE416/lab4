@@ -11,9 +11,10 @@
 #include "sim.h"
 
 #define STANDARD_DEVIATION (1)
-#define ITERATIONS (2)
+#define ITERATIONS (10)
 
-#define MOVEMENT_TICKS (45.0)
+#define STARTING_LOCATION (22.5)
+#define MOVEMENT_TICKS (22.5)
 
 int checkarg (int argc, char *argv[], block_layout_t *block);
 
@@ -27,7 +28,7 @@ int main(int argc, char *argv[]){
 		return 0;
 	}
 
-	float location = 45.0;
+	float location = STARTING_LOCATION;
 
 	print_block_art(block);
 
@@ -35,11 +36,13 @@ int main(int argc, char *argv[]){
     init_particle_array(particle_array);
 
 	for (int i = 0; i < ITERATIONS; i++){
-		u08 distance_reading = read_prox_sensor(block, location);
-		localize(block, particle_array, MOVEMENT_TICKS, distance_reading);
+		u08 prox_reading = generate_prox_value(block, location);
+		printf("Read physical sensor value %d from location %4.1f\n", prox_reading, location);
+		localize(block, particle_array, MOVEMENT_TICKS, prox_reading);
 		location = increment_location(location, MOVEMENT_TICKS);
 	}
 	print_particle_array(particle_array);
+	printf("End location: %4.1f\n", location);
 }
 
 /* checks for correct number of arguments */
