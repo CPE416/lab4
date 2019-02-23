@@ -60,10 +60,32 @@ int main(void)
 	// }
 
 	// Test Distance Sensor
+	// while(1){
+	// 	poll_distance(DISTANCE_SENSOR);
+	// 	delay_ms(200);
+	// }
+
+	// test Encoder Sensor with PID
+	motor_command_t motors;
+	line_data_t line_data;
+	init_encoder();
+
+	delay_ms(500);
 	while(1){
-		poll_distance(DISTANCE_SENSOR);
-		delay_ms(200);
+		print_encoders();
+		line_data = read_line_sensor();
+		motors = compute_proportional(line_data.left, line_data.right);
+		set_motors(motors);
+		if((get_btn() == 1) || (get_btn2() == 1)){
+        	halt();
+        	delay_ms(500);
+        	while((get_btn() == 0) && (get_btn2() == 0)){
+        		delay_ms(1);
+   	 		}
+    	}
 	}
+
+	
 
 	while(1){
 		// clear_screen();

@@ -8,7 +8,7 @@
 #include "defs.h"
 
 #define THRESHOLD 200
-#define BASE_MOTOR_SPEED 25
+#define BASE_MOTOR_SPEED 20
 #define P_TERM 1
 #define I_TERM 0
 #define D_TERM 0
