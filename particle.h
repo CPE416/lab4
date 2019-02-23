@@ -11,7 +11,7 @@
 
 #define DISTANCE_THRESHHOLD (60)
 
-#define NUM_PARTICLES (100)
+#define NUM_PARTICLES (8)
 #define RATIO_KEEP_PARTICLES (0.9)
 
 #define TICKS_PER_DEGREE (2.0)
@@ -126,8 +126,8 @@ void recalculate_weights(block_layout_t layout, particle_t *particle_array, u08 
         particle_array[i].weight = run_sensor_model(layout, particle_array[i].position);
         sum += particle_array[i].weight;
     }
-    float factor = RATIO_KEEP_PARTICLES / sum ;
-    printf("Weight factor: %f\n", factor);
+    float factor = 1.0 / sum ;
+    printf("Weight normalization factor: %f\n", factor);
     for (int i = 0; i < NUM_PARTICLES; i++){
         particle_array[i].weight = factor * particle_array[i].weight;
     }
@@ -151,7 +151,7 @@ void resample_particles(block_layout_t layout, particle_t *old_array){
     for(int i = 0; (i < NUM_PARTICLES) && (new_index < NUM_PARTICLES); i++){
         particle_t p = old_array[i];
         int clone_times = calc_clone_weight(p.weight);
-        // printf("Resampled particle @ %5.1f w: %f, %d times\n", p.position, p.weight, clone_times);
+        printf("Resampled particle @ %5.1f w: %f, %d times\n", p.position, p.weight, clone_times);
         for (int i = 0; (i < clone_times) && (new_index < NUM_PARTICLES); i++){
             new_array[new_index] = p;
             new_index += 1;
