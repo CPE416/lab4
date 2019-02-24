@@ -11,7 +11,7 @@
 #include "sim.h"
 
 #define STANDARD_DEVIATION (1)
-#define ITERATIONS (10)
+#define ITERATIONS (2)
 
 #define STARTING_LOCATION (22.5)
 #define MOVEMENT_TICKS (22.5)
