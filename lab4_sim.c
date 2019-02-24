@@ -14,7 +14,7 @@
 #define RAND_SEED (time(NULL))
 
 #define STANDARD_DEVIATION (2.0 * BLOCK_FUDGE_FACTOR)
-#define MAX_ITERATIONS (20)
+#define MAX_ITERATIONS (100000)
 
 #define STARTING_LOCATION (0)
 #define MOVEMENT_TICKS (10)
@@ -52,15 +52,16 @@ int main(int argc, char *argv[]){
 			//  Localitization complete
 			print_particle_array(particle_array);
 			printf("Localized at %4.1f after %d iterations with standard deviation of %3.1f\n", avg, i, std_dev);
-			i = MAX_ITERATIONS;
+			break;
 		}
-		if (i == MAX_ITERATIONS - 1){
+		if (i >= MAX_ITERATIONS - 1){
 			// Reached max iterations
 			print_particle_array(particle_array);
-			printf("Failed to localize after %d iterations with standard deviation of %3.1f for avg at %4.1f \n", i + 1, std_dev, avg);
+			printf("Failed to localize after %d iterations with standard deviation of %3.1f for avg at %4.1f \n", i, std_dev, avg);
+			break;
 		}else{
 			// Continue simulation
-			printf("Iteration: %d, continuing. Standard deviation of %3.1f for avg at %4.1f \n", i + 1, std_dev, avg);
+			printf("Iteration: %d, continuing. Standard deviation of %3.1f for avg at %4.1f \n\n", i + 1, std_dev, avg);
 			location = increment_location(location, MOVEMENT_TICKS);
 		}
 	}

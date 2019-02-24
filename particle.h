@@ -63,7 +63,6 @@ float ticks_to_degrees(int ticks){
 float generate_gaussian_value(){
     float u1 = RAND;
     float u2 = RAND;
-
     float root = sqrt(-2.0 * log(u1));
     float cosine = cos(2.0 * M_PI * u2);
     // printf("Boxie: u1: %f, u2: %f, root: %f, cosine: %f\n", u1, u2, root, cosine);
