@@ -71,8 +71,8 @@ float generate_gaussian_value(){
 }
 
 void run_motion_model(particle_t *particle_array, int ticks){
+    float degrees = ticks_to_degrees(ticks);
     for (int i = 0; i < NUM_PARTICLES; i++){
-        float degrees = ticks_to_degrees(ticks);
         float noise = generate_gaussian_value();
         // printf("Moving particle from %5.1f by %f plus %f\n", particle_array[i].position, degrees, noise);
         particle_array[i].position += degrees + noise;
@@ -88,7 +88,7 @@ void run_motion_model(particle_t *particle_array, int ticks){
 int generate_prox_value(block_layout_t layout, float location){
 	float sensor_val;
 	u08 has_block = is_block(layout, location);
-	if (has_block ){
+	if (has_block){
 		float distance  = distance_to_block(layout, location);
 		sensor_val = 250.0 - distance;
 	}
@@ -162,6 +162,19 @@ void resample_particles(block_layout_t layout, particle_t *old_array){
         new_array[i] = generate_particle();
     }
     copy_particle_array(new_array, old_array);
+}
+
+float compute_std_deviation(particle_t *particle_array){
+    float mean = 0;
+    float std_dev = 0;
+    for (int i = 0; i < NUM_PARTICLES; i++){
+        mean += particle_array[i].position;
+    }
+    mean = mean/NUM_PARTICLES;
+    for(int j = 0; j < NUM_PARTICLES; j++)
+        std_dev += pow(particle_array[j].position - mean, 2);
+
+    return sqrt(std_dev/NUM_PARTICLES);
 }
 
 #endif

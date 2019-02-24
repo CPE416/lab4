@@ -19,6 +19,7 @@
 
 // Settings
 #define DELAY_MS 100 // Delay time for control loop
+#define DRIVE_FOR_ENCODER_COUNT 15
 
 u08 set_mode(u08 mode, int *flag);
 void print_data(line_data_t sensor, int count);
@@ -144,6 +145,7 @@ u08 get_target_block(block_layout_t layout){
     return block_num;
 }
 
+//Choose Block Positions
 int get_position(int i){
     int position_num = 0;
     u08 accel_data = 0;
