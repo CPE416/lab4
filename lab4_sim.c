@@ -13,11 +13,11 @@
 
 #define RAND_SEED (time(NULL))
 
-#define STANDARD_DEVIATION (1)
-#define ITERATIONS (2)
+#define STANDARD_DEVIATION (2.0 * BLOCK_FUDGE_FACTOR)
+#define MAX_ITERATIONS (20)
 
-#define STARTING_LOCATION (22.5)
-#define MOVEMENT_TICKS (22.5)
+#define STARTING_LOCATION (0)
+#define MOVEMENT_TICKS (10)
 
 int checkarg (int argc, char *argv[], block_layout_t *block);
 
@@ -38,18 +38,26 @@ int main(int argc, char *argv[]){
     particle_t particle_array[NUM_PARTICLES];
     init_particle_array(particle_array);
 
-	for (int i = 0; i < ITERATIONS; i++){
+	for (int i = 0; i < MAX_ITERATIONS; i++){
 		u08 prox_reading = generate_prox_value(layout, location);
 		printf("Read physical sensor value %d from location %4.1f\n", prox_reading, location);
 
 		run_motion_model(particle_array, MOVEMENT_TICKS);
     	recalculate_weights(layout, particle_array, prox_reading);
-    	resample_particles2(layout, particle_array);
+    	resample_particles(layout, particle_array);
 
-		location = increment_location(location, MOVEMENT_TICKS);
+		float avg = -1.0;
+		float std_dev = compute_std_deviation(particle_array, &avg);
+		if (std_dev < STANDARD_DEVIATION){
+
+			print_particle_array(particle_array);
+			printf("Localized at %4.1f after %d iterations with standard deviation of %3.1f\n", avg, i, std_dev);
+			printf("End location: %4.1f\n", location);
+			break;
+		}else{
+			location = increment_location(location, MOVEMENT_TICKS);
+		}
 	}
-	print_particle_array(particle_array);
-	printf("End location: %4.1f\n", location);
 }
 
 /* checks for correct number of arguments */
