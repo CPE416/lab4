@@ -120,20 +120,21 @@ float run_sensor_model(block_layout_t layout, u08 sensor_val, float particle_loc
 
 void recalculate_weights(block_layout_t layout, particle_t *particle_array, u08 sensor_val){
     // printf("Recalculating weights\n");
-    float sum = 0;
+    float sum = 0.00000001;
     for (int i = 0; i < NUM_PARTICLES; i++){
         particle_array[i].weight = run_sensor_model(layout, sensor_val, particle_array[i].position);
         sum += particle_array[i].weight;
     }
-    float factor = 1.0 / sum ;
-    printf("Weight normalization factor: %f\n", factor);
+    float new_sum = 1.0;
+    float factor = new_sum / sum ;
+    printf("Old sum: %f, Normalization factor: %f, new sum %f\n", sum, factor, factor * sum);
     for (int i = 0; i < NUM_PARTICLES; i++){
         particle_array[i].weight = factor * particle_array[i].weight;
     }
 }
 
 int calc_clone_weight(float weight){
-    int count = (int) (weight * ((float) NUM_PARTICLES) / RATIO_KEEP_PARTICLES);
+    int count = (int) (weight * ((float) NUM_PARTICLES) * RATIO_KEEP_PARTICLES);
     // printf("Clone count: %d from %f\n", count, weight);
     return count;
 }
@@ -154,9 +155,9 @@ void resample_particles(block_layout_t layout, particle_t *old_array){
             new_array[new_index] = p;
             new_index++;
         }
-        printf("Resampled particle @ %5.1f w: %4.3f, %d times\n", p.position, p.weight, clone_times);
+        // printf("Resampled particle @ %5.1f w: %4.3f, %d times\n", p.position, p.weight, clone_times);
     }
-    printf("Resampled %d particles\n", new_index);
+    printf("Resampled %d particles, generating %d random aprticles\n", new_index, NUM_PARTICLES - new_index);
     for (int i = new_index; i < NUM_PARTICLES; i++){
         new_array[i] = generate_particle();
     }
