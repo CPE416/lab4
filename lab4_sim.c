@@ -15,6 +15,7 @@
 
 #define STANDARD_DEVIATION (2.0 * BLOCK_FUDGE_FACTOR)
 #define MAX_ITERATIONS (100000)
+#define NUM_SIMULATIONS (200)
 
 #define STARTING_LOCATION (0)
 #define MOVEMENT_TICKS (10)
@@ -31,41 +32,59 @@ int main(int argc, char *argv[]){
 		return 0;
 	}
 
-	float location = STARTING_LOCATION;
 
 	print_block_art(layout);
 
     particle_t particle_array[NUM_PARTICLES];
     init_particle_array(particle_array);
 
-	for (int i = 0; i < MAX_ITERATIONS; i++){
-		u08 prox_reading = generate_prox_value(layout, location);
-		printf("Read physical sensor value %d from location %4.1f\n", prox_reading, location);
+	for (int i_sim = 0; i_sim < NUM_SIMULATIONS; i_sim++){
+		float end_location = -1;
+		float end_guess = -1;
 
-		run_motion_model(particle_array, MOVEMENT_TICKS);
-    	recalculate_weights(layout, particle_array, prox_reading);
-    	resample_particles(layout, particle_array);
 
-		float avg = -1.0;
-		float std_dev = compute_std_deviation(particle_array, &avg);
-		if (std_dev < STANDARD_DEVIATION){
-			//  Localitization complete
-			print_particle_array(particle_array);
-			printf("Localized at %4.1f after %d iterations with standard deviation of %3.1f\n", avg, i, std_dev);
-			break;
+		float location = STARTING_LOCATION;
+		for (int i = 0; i < MAX_ITERATIONS; i++){
+			u08 prox_reading = generate_prox_value(layout, location);
+			// printf("Read physical sensor value %d from location %4.1f\n", prox_reading, location);
+
+			run_motion_model(particle_array, MOVEMENT_TICKS);
+			recalculate_weights(layout, particle_array, prox_reading);
+			resample_particles(layout, particle_array);
+
+			float avg = -1.0;
+			float std_dev = compute_std_deviation(particle_array, &avg);
+			if (std_dev < STANDARD_DEVIATION){
+				//  Localitization complete
+				// print_particle_array(particle_array);
+				printf("\tLocalized at %4.1f after %d iterations with standard deviation of %3.1f\n", avg, i, std_dev);
+				
+				end_location = location;
+				end_guess = avg;
+				break;
+			}
+			if (i >= MAX_ITERATIONS - 1){
+				// Reached max iterations
+				print_particle_array(particle_array);
+				printf("FAILED to localize after %d iterations with standard deviation of %3.1f for avg at %4.1f \n", i, std_dev, avg);
+				
+				end_location = location;
+				end_guess = avg;
+				break;
+			}else{
+				// Continue simulation
+				// printf("Iteration: %d, continuing. Standard deviation of %3.1f for avg at %4.1f \n\n", i + 1, std_dev, avg);
+				location = increment_location(location, MOVEMENT_TICKS);
+			}
 		}
-		if (i >= MAX_ITERATIONS - 1){
-			// Reached max iterations
-			print_particle_array(particle_array);
-			printf("Failed to localize after %d iterations with standard deviation of %3.1f for avg at %4.1f \n", i, std_dev, avg);
-			break;
-		}else{
-			// Continue simulation
-			printf("Iteration: %d, continuing. Standard deviation of %3.1f for avg at %4.1f \n\n", i + 1, std_dev, avg);
-			location = increment_location(location, MOVEMENT_TICKS);
-		}
+	if (abs(end_guess - end_location) < STANDARD_DEVIATION){
+		printf("SUCCESS: ");
 	}
-	printf("End location: %4.1f\n", location);
+	else{
+		printf("\t");
+	}
+	printf("Sim: %4d\tGuess: %4.1f, actual: %4.1f\n", i_sim + 1, end_guess, end_location);
+	}
 }
 
 /* checks for correct number of arguments */

@@ -126,7 +126,7 @@ void recalculate_weights(block_layout_t layout, particle_t *particle_array, u08 
         sum += particle_array[i].weight;
     }
     float factor = 1.0/ sum ;
-    printf("Old sum: %f, Normalization factor: %f, new sum %f\n", sum, factor, factor * sum);
+    // printf("Old sum: %f, Normalization factor: %f, new sum %f\n", sum, factor, factor * sum);
     for (int i = 0; i < NUM_PARTICLES; i++){
         particle_array[i].weight = factor * particle_array[i].weight;
     }
@@ -160,7 +160,7 @@ void resample_particles(block_layout_t layout, particle_t *old_array){
         // printf("Resampling p: %4.1f  w: %4.3f\n", p.position, p.weight);
         new_array[new_index] = p;
     }
-    printf("Resampled %d old particles, generating %d random aprticles\n", new_index, NUM_PARTICLES - new_index);
+    // printf("Resampled %d old particles, generating %d random aprticles\n", new_index, NUM_PARTICLES - new_index);
     for (int i = num_resampled; i < NUM_PARTICLES; i++){
         new_array[i] = generate_particle();
     }
