@@ -170,10 +170,10 @@ float compute_std_deviation(particle_t *particle_array){
         mean += particle_array[i].position;
     }
     mean = mean/NUM_PARTICLES;
-    for(j = 0; j < NUM_PARTICLES; j++)
-        std_dev += pow(particle_array[i] - mean, 2);
+    for(int j = 0; j < NUM_PARTICLES; j++)
+        std_dev += pow(particle_array[j].position - mean, 2);
 
-    return sqrt(standardDeviation/NUM_PARTICLES);
+    return sqrt(std_dev/NUM_PARTICLES);
 }
 
 #endif
