@@ -116,6 +116,7 @@ float run_sensor_model(block_layout_t layout, u08 sensor_val, float particle_loc
 }
 
 
+
 void recalculate_weights(block_layout_t layout, particle_t *particle_array, u08 sensor_val){
     // printf("Recalculating weights\n");
     float sum = 0.00000001;
@@ -123,8 +124,7 @@ void recalculate_weights(block_layout_t layout, particle_t *particle_array, u08 
         particle_array[i].weight = run_sensor_model(layout, sensor_val, particle_array[i].position);
         sum += particle_array[i].weight;
     }
-    float new_sum = RATIO_KEEP_PARTICLES;
-    float factor = new_sum / sum ;
+    float factor = 1.0/ sum ;
     printf("Old sum: %f, Normalization factor: %f, new sum %f\n", sum, factor, factor * sum);
     for (int i = 0; i < NUM_PARTICLES; i++){
         particle_array[i].weight = factor * particle_array[i].weight;
@@ -167,24 +167,24 @@ void resample_particles2(block_layout_t layout, particle_t *old_array){
     int curr_particle_weight;
     print_particle_array(old_array);
 
-    float factor = NUM_PARTICLES * RATIO_KEEP_PARTICLES;
+    int factor = RATIO_KEEP_PARTICLES * NUM_PARTICLES;
     particle_t new_array[NUM_PARTICLES];
-    for(int i = 0; i < NUM_PARTICLES;  i++){
-        particle_t p = old_array[i];
-        int curr_particle_weight = ceil(p.weight * factor);
-        for (int clone_index = 0; clone_index < curr_particle_weight; clone_index++){
-            new_array[new_index] = p;
-            new_index++;
+
+    for(int i = 0; i < factor;  i++){
+        float rand_position = (RATIO_KEEP_PARTICLES * (rand() / RAND_MAX));
+        int particle_count = 0;
+        while(rand_position > 0.0){
+            rand_position -= old_array[i].weight;
+            particle_count++;
         }
-        // printf("Resampled particle @ %5.1f w: %4.3f, %d times\n", p.position, p.weight, clone_times);
+        new_array[i].position = old_array[particle_count].position;
+        new_array[i].weight = old_array[particle_count].weight;
     }
     printf("Resampled %d particles, generating %d random aprticles\n", new_index, NUM_PARTICLES - new_index);
-    for (int i = new_index; i < NUM_PARTICLES; i++){
+    for (int i = factor; i < NUM_PARTICLES; i++){
         new_array[i] = generate_particle();
     }
-    print_particle_array(new_array);
     copy_particle_array(new_array, old_array);
-    
 }
 
 float compute_std_deviation(particle_t *particle_array){
