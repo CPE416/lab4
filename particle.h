@@ -10,6 +10,8 @@
 
 #define DISTANCE_THRESHHOLD (60)
 
+#define GAUSSIAN_NOISE_FACTOR (5.0)
+
 #define NUM_PARTICLES (100)
 #define RATIO_KEEP_PARTICLES (0.9)
 
@@ -65,7 +67,7 @@ float generate_gaussian_value(){
     float root = sqrt(-2.0 * log(u1));
     float cosine = cos(2.0 * M_PI * u2);
     // printf("Boxie: u1: %f, u2: %f, root: %f, cosine: %f\n", u1, u2, root, cosine);
-    return  root * cosine;
+    return GAUSSIAN_NOISE_FACTOR * root * cosine;
 }
 
 void run_motion_model(particle_t *particle_array, int ticks){
@@ -142,25 +144,6 @@ void copy_particle_array(particle_t *old_particle_arrray, particle_t *new_partic
         new_particle_array[i] = old_particle_arrray[i];
     }
 }
-
-// void resample_particles(block_layout_t layout, particle_t *old_array){
-//     int new_index = 0;
-//     particle_t new_array[NUM_PARTICLES];
-//     for(int i = 0; (i < NUM_PARTICLES) && (new_index < NUM_PARTICLES); i++){
-//         particle_t p = old_array[i];
-//         int clone_times = calc_clone_weight(p.weight);
-//         for (int clone_index = 0;(clone_index < clone_times) && (new_index < NUM_PARTICLES); clone_index++){
-//             new_array[new_index] = p;
-//             new_index++;
-//         }
-//         // printf("Resampled particle @ %5.1f w: %4.3f, %d times\n", p.position, p.weight, clone_times);
-//     }
-//     printf("Resampled %d particles, generating %d random aprticles\n", new_index, NUM_PARTICLES - new_index);
-//     for (int i = new_index; i < NUM_PARTICLES; i++){
-//         new_array[i] = generate_particle();
-//     }
-//     copy_particle_array(new_array, old_array);
-// }
 
 void resample_particles(block_layout_t layout, particle_t *old_array){
     int num_resampled = RATIO_KEEP_PARTICLES * NUM_PARTICLES;

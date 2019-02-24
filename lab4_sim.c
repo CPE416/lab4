@@ -49,15 +49,22 @@ int main(int argc, char *argv[]){
 		float avg = -1.0;
 		float std_dev = compute_std_deviation(particle_array, &avg);
 		if (std_dev < STANDARD_DEVIATION){
-
+			//  Localitization complete
 			print_particle_array(particle_array);
 			printf("Localized at %4.1f after %d iterations with standard deviation of %3.1f\n", avg, i, std_dev);
-			printf("End location: %4.1f\n", location);
-			break;
+			i = MAX_ITERATIONS;
+		}
+		if (i == MAX_ITERATIONS - 1){
+			// Reached max iterations
+			print_particle_array(particle_array);
+			printf("Failed to localize after %d iterations with standard deviation of %3.1f for avg at %4.1f \n", i + 1, std_dev, avg);
 		}else{
+			// Continue simulation
+			printf("Iteration: %d, continuing. Standard deviation of %3.1f for avg at %4.1f \n", i + 1, std_dev, avg);
 			location = increment_location(location, MOVEMENT_TICKS);
 		}
 	}
+	printf("End location: %4.1f\n", location);
 }
 
 /* checks for correct number of arguments */
