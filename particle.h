@@ -71,7 +71,7 @@ float generate_gaussian_value(){
 void run_motion_model(particle_t *particle_array, int ticks){
     float degrees = ticks_to_degrees(ticks);
     for (int i = 0; i < NUM_PARTICLES; i++){
-        float noise = generate_gaussian_value();
+        float noise = 5*generate_gaussian_value();
         // printf("Moving particle from %5.1f by %f plus %f\n", particle_array[i].position, degrees, noise);
         particle_array[i].position += degrees + noise;
         if (particle_array[i].position > 360.0){
@@ -165,7 +165,7 @@ void resample_particles(block_layout_t layout, particle_t *old_array){
 void resample_particles2(block_layout_t layout, particle_t *old_array){
     int new_index = 0;
     int curr_particle_weight;
-    print_particle_array(old_array);
+    //print_particle_array(old_array);
 
     int factor = RATIO_KEEP_PARTICLES * NUM_PARTICLES;
     particle_t new_array[NUM_PARTICLES];
@@ -180,7 +180,7 @@ void resample_particles2(block_layout_t layout, particle_t *old_array){
         new_array[i].position = old_array[particle_count].position;
         new_array[i].weight = old_array[particle_count].weight;
     }
-    printf("Resampled %d particles, generating %d random aprticles\n", new_index, NUM_PARTICLES - new_index);
+    //("Resampled %d particles, generating %d random aprticles\n", new_index, NUM_PARTICLES - new_index);
     for (int i = factor; i < NUM_PARTICLES; i++){
         new_array[i] = generate_particle();
     }
@@ -196,7 +196,7 @@ float compute_std_deviation(particle_t *particle_array){
     mean = mean/NUM_PARTICLES;
     for(int j = 0; j < NUM_PARTICLES; j++)
         std_dev += pow(particle_array[j].position - mean, 2);
-
+    printf("Mean = %f, Standard Deviation = %f\n", mean, std_dev );
     return sqrt(std_dev/NUM_PARTICLES);
 }
 

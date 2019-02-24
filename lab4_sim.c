@@ -14,7 +14,7 @@
 #define RAND_SEED (time(NULL))
 
 #define STANDARD_DEVIATION (1)
-#define ITERATIONS (2)
+#define ITERATIONS (20)
 
 #define STARTING_LOCATION (22.5)
 #define MOVEMENT_TICKS (22.5)
@@ -45,7 +45,7 @@ int main(int argc, char *argv[]){
 		run_motion_model(particle_array, MOVEMENT_TICKS);
     	recalculate_weights(layout, particle_array, prox_reading);
     	resample_particles2(layout, particle_array);
-
+		compute_std_deviation(&particle_array[0]);
 		location = increment_location(location, MOVEMENT_TICKS);
 	}
 	print_particle_array(particle_array);
