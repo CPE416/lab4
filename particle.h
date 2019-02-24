@@ -3,7 +3,6 @@
 
 #include <math.h>
 #include <stdlib.h>
-#include <time.h>
 
 #include "defs.h"
 #include "block_layout.h"
@@ -15,7 +14,6 @@
 #define RATIO_KEEP_PARTICLES (0.9)
 
 #define TICKS_PER_DEGREE (2.0)
-#define RAND_SEED (time(NULL))
 #define RAND (((float) rand()) / (float) RAND_MAX)
 #define RANDOM_PARTICLE_POS ((360.0 * rand()) / RAND_MAX)
 

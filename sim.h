@@ -4,7 +4,6 @@
 #include <stdio.h>
 
 #include "block_layout.h"
-#include "monte.h"
 
 float increment_location(float location, float degrees){
     float new_location = location + degrees;

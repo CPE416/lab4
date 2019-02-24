@@ -4,11 +4,14 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <time.h>
 
-#include "monte.h"
 #include "defs.h"
 #include "block_layout.h"
 #include "sim.h"
+#include "particle.h"
+
+#define RAND_SEED (time(NULL))
 
 #define STANDARD_DEVIATION (1)
 #define ITERATIONS (10)
@@ -21,24 +24,28 @@ int checkarg (int argc, char *argv[], block_layout_t *block);
 int main(int argc, char *argv[]){
 	srand(RAND_SEED);
 
-	block_layout_t block;
+	block_layout_t layout;
 
-	int check = checkarg(argc,argv, &block);
+	int check = checkarg(argc,argv, &layout);
 	if(check == -1){
 		return 0;
 	}
 
 	float location = STARTING_LOCATION;
 
-	print_block_art(block);
+	print_block_art(layout);
 
     particle_t particle_array[NUM_PARTICLES];
     init_particle_array(particle_array);
 
 	for (int i = 0; i < ITERATIONS; i++){
-		u08 prox_reading = generate_prox_value(block, location);
+		u08 prox_reading = generate_prox_value(layout, location);
 		printf("Read physical sensor value %d from location %4.1f\n", prox_reading, location);
-		localize(block, particle_array, MOVEMENT_TICKS, prox_reading);
+
+		run_motion_model(particle_array, MOVEMENT_TICKS);
+    	recalculate_weights(layout, particle_array, prox_reading);
+    	resample_particles(layout, particle_array);
+
 		location = increment_location(location, MOVEMENT_TICKS);
 	}
 	print_particle_array(particle_array);
