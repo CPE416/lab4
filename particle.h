@@ -76,6 +76,9 @@ void run_motion_model(particle_t *particle_array, int ticks){
         if (particle_array[i].position > 360.0){
             particle_array[i].position -= 360.0;
         }
+        if (particle_array[i].position < 0.0){
+            particle_array[i].position += 360.0;
+        }
     }
     // printf("Ran motion model\n");
     // print_particle_array(particle_array);
