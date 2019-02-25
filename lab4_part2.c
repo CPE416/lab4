@@ -23,7 +23,7 @@
 // Settings
 #define DELAY_MS (100) // Delay time for control loop
 #define DRIVE_FOR_ENCODER_COUNT (15)
-#define FULL_RING_ENCODER_COUNT; (480)
+#define FULL_RING_ENCODER_COUNT (480)
 #define NUM_PARTICLES (100)
 #define DISTANCE_SENSOR (5)
 #define STD_DEVIATION_THRESHOLD (10)
@@ -44,6 +44,8 @@ void print_block_info(block_layout_t layout);
 void print_block_positions(block_layout_t layout);
 void print_position_block(int num, int count);
 void move_distance_on_line(line_data_t line_data, motor_command_t motors);
+float calc_distance_from_target(block_layout_t layout, float average_position);
+void drive_for_encoder(line_data_t line_data, motor_command_t motors, float encoder_count);
 u08 get_target_block(block_layout_t layout);
 u08 get_num_block();
 int get_position();
@@ -138,7 +140,7 @@ int main(void)
 
 float calc_distance_from_target(block_layout_t layout, float average_position){
     float target_distance;
-    target_position = layout.block_locations[layout.target_block - 1];
+    float target_position = layout.block_locations[layout.target_block - 1];
     if(average_position > target_position){
         target_distance = 360 - average_position + target_position;
     }else{
