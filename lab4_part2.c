@@ -23,7 +23,7 @@
 // Settings
 #define DELAY_MS (100) // Delay time for control loop
 #define DRIVE_FOR_ENCODER_COUNT (15)
-#define FULL_RING_ENCODER_COUNT (480)
+#define FULL_RING_ENCODER_COUNT; (480)
 #define NUM_PARTICLES (100)
 #define DISTANCE_SENSOR (5)
 #define STD_DEVIATION_THRESHOLD (10)
@@ -117,16 +117,44 @@ int main(void)
     //Loop until finished
     while (1){
         move_distance_on_line(line_data, motors);
-        float normalized_distance = FULL_RING_ENCODER_COUNT/DRIVE_FOR_ENCODER_COUNT;
+        float normalized_distance = (FULL_RING_ENCODER_COUNT/DRIVE_FOR_ENCODER_COUNT)*360;
         run_motion_model(particle_array, normalized_distance);
         u08 distance_reading = analog(DISTANCE_SENSOR);
         recalculate_weights(layout, particle_array, distance_reading);
         resample_particles(layout, particle_array);
         std_dev = compute_std_deviation(&particle_array[0], &average_position);
         if(std_dev < STD_DEVIATION_THRESHOLD){
-
+            float target_distance = calc_distance_from_target(layout, average_position);
+            float encoder_distance = (target_distance/360) * FULL_RING_ENCODER_COUNT;
+            drive_for_encoder(line_data, motors, encoder_distance);
+            rotate_90();
+            motor(MOTOR_LEFT, 30);
+            motor(MOTOR_RIGHT, 30);
+            halt();
+            return 1;
         }
     }
+}
+
+float calc_distance_from_target(block_layout_t layout, float average_position){
+    float target_distance;
+    target_position = layout.block_locations[layout.target_block - 1];
+    if(average_position > target_position){
+        target_distance = 360 - average_position + target_position;
+    }else{
+        target_distance = target_position - average_position;
+    }
+    return target_distance;
+}
+
+void drive_for_encoder(line_data_t line_data, motor_command_t motors, float encoder_count){
+    while(right_encoder < encoder_count){
+        line_data = read_line_sensor();
+        motors = compute_proportional(line_data.left, line_data.right);
+        set_motors(motors);
+    }
+    halt();
+    reset_encoders();
 }
 
 void move_distance_on_line(line_data_t line_data, motor_command_t motors){
