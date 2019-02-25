@@ -45,7 +45,9 @@ void print_num_block(u08 num);
 void print_block_info(block_layout_t layout);
 void print_block_positions(block_layout_t layout);
 void print_position_block(int num, int count);
+
 void move_distance_on_line(int ticks);
+float calc_distance_from_target(block_layout_t layout, float average_position);
 u08 get_target_block(block_layout_t layout);
 u08 get_num_block();
 int get_position();
@@ -116,16 +118,18 @@ int main(void)
         move_distance_on_line(MOVEMENT_TICKS);
         float movement_degrees = ticks_to_degrees(MOVEMENT_TICKS);
         run_motion_model(particle_array, movement_degrees);
-        u08 distance_reading = analog(DISTANCE_SENSOR);
-        recalculate_weights(layout, particle_array, distance_reading);
+        u08 prox_reading = analog(DISTANCE_SENSOR);
+        recalculate_weights(layout, particle_array, prox_reading);
         resample_particles(layout, particle_array);
         std_dev = compute_std_deviation(&particle_array[0], &average_position);
         if(std_dev < STD_DEVIATION_THRESHOLD){
-            // Localized
-
-            move_distance_on_line(average_position - target_location(layout)); // Not correct calculation
-            rotate_90(); // Needs calibration
+            float target_distance = calc_distance_from_target(layout, average_position);
+            float encoder_distance = (target_distance/360) * FULL_RING_ENCODER_COUNT;
+            move_distance_on_line(encoder_distance);
+            rotate_90();
             forward(100);
+            halt();
+            return 0;
         }
     }
 }
@@ -135,7 +139,7 @@ void move_distance_on_line(int ticks){
     motor_command_t motors;
     line_data_t line_data;
 
-    while(right_encoder < ticks){
+    while(right_encoder < ticks){ 
         line_data = read_line_sensor();
         motors = compute_proportional(line_data.left, line_data.right);
         set_motors(motors);
@@ -144,6 +148,26 @@ void move_distance_on_line(int ticks){
     reset_encoders();
 }
 
+float calc_distance_from_target(block_layout_t layout, float average_position){
+    float target_distance;
+    float target_position = layout.block_locations[layout.target_block - 1];
+    if(average_position > target_position){
+        target_distance = 360 - average_position + target_position;
+    }else{
+        target_distance = target_position - average_position;
+    }
+    return target_distance;
+}
+
+// void drive_for_encoder(line_data_t line_data, motor_command_t motors, float encoder_count){
+//     while(right_encoder < encoder_count){
+//         line_data = read_line_sensor();
+//         motors = compute_proportional(line_data.left, line_data.right);
+//         set_motors(motors);
+//     }
+//     halt();
+//     reset_encoders();
+// }  
 
 //Choose Number of Blocks
 u08 get_num_block(){
@@ -263,46 +287,46 @@ void read_accel(u08 *horizontal)
     horizontal[0] = get_accel_y(); // Left and right
 }
 
-void print_data(line_data_t sensor, int count){
-    clear_screen();
-    print_string("Data");
-    lcd_cursor(4, 0);
-    print_num(count);
-    lcd_cursor(0, 1);
-    print_num(sensor.left);
-    lcd_cursor(4, 1);
-    print_num(sensor.right);
-}
+// void print_data(line_data_t sensor, int count){
+//     clear_screen();
+//     print_string("Data");
+//     lcd_cursor(4, 0);
+//     print_num(count);
+//     lcd_cursor(0, 1);
+//     print_num(sensor.left);
+//     lcd_cursor(4, 1);
+//     print_num(sensor.right);
+// }
 
-void print_training(int count){
-    clear_screen();
-    print_string("Training");
-    lcd_cursor(0, 1);
-    print_num(count);
-}
-void print_training2(int count){
-    clear_screen();
-    print_string("Training");
-    lcd_cursor(0, 1);
-    print_num(count);
-    lcd_cursor(4, 1);
-    print_string("a");
-}
+// void print_training(int count){
+//     clear_screen();
+//     print_string("Training");
+//     lcd_cursor(0, 1);
+//     print_num(count);
+// }
+// void print_training2(int count){
+//     clear_screen();
+//     print_string("Training");
+//     lcd_cursor(0, 1);
+//     print_num(count);
+//     lcd_cursor(4, 1);
+//     print_string("a");
+// }
 
-void print_training3(int count1, int count2){
-    clear_screen();
-    print_string("Training");
-    lcd_cursor(0, 1);
-    print_num(count1);
-    lcd_cursor(4, 1);
-    print_num(count2);
-}
+// void print_training3(int count1, int count2){
+//     clear_screen();
+//     print_string("Training");
+//     lcd_cursor(0, 1);
+//     print_num(count1);
+//     lcd_cursor(4, 1);
+//     print_num(count2);
+// }
 
-void print_training4(int count1, int count2){
-    clear_screen();
-    print_string("Neural");
-    lcd_cursor(0, 1);
-    print_num(count1);
-    lcd_cursor(4, 1);
-    print_num(count2);
-}
+// void print_training4(int count1, int count2){
+//     clear_screen();
+//     print_string("Neural");
+//     lcd_cursor(0, 1);
+//     print_num(count1);
+//     lcd_cursor(4, 1);
+//     print_num(count2);
+// }
