@@ -4,3 +4,4 @@
 *.conf
 avrdude.exe
 lab4_sim
+multi_sim

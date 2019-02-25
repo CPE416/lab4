@@ -95,7 +95,13 @@ build_sim: lab4_sim.c *.h
 	gcc $(CFLAGS) -g -o lab4_sim lab4_sim.c -lm
 
 sim1: build_sim
-	./lab4_sim 4 3 45 90 135 225 
+	./lab4_sim 4 3 45 90 135 225
+
+build_multi_sim: multi_sim.c *.h
+	gcc $(CFLAGS) -g -o multi_sim multi_sim.c -lm
+
+sim2: build_multi_sim
+	./multi_sim 4 3 45 90 135 225 
 
 # Detect USB device
 # Pipe all devices to file
