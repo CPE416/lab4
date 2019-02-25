@@ -5,10 +5,17 @@
 #include "delay.h"
 #include "hardware.h"
 
+#define FULL_RING_ENCODER_COUNT (480)
+#define TICKS_PER_DEGREE (360.0 / FULL_RING_ENCODER_COUNT) 
+
 #define ROTATE_TICKS 32
 
 volatile uint16_t left_encoder = 0;
 volatile uint16_t right_encoder = 0;
+
+float ticks_to_degrees(int ticks){
+    return ticks  / TICKS_PER_DEGREE;
+}
 
 void reset_left_encoder(){
     left_encoder = 0;
