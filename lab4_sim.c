@@ -9,86 +9,46 @@
 #include "defs.h"
 #include "block_layout.h"
 #include "sim.h"
-#include "particle.h"
 
 #define RAND_SEED (time(NULL))
 
-#define STANDARD_DEVIATION (2.0 * BLOCK_FUDGE_FACTOR)
-#define MAX_ITERATIONS (100000)
-#define NUM_SIMULATIONS (200)
+#define STANDARD_DEVIATION_THRESHHOLD (50.0)
+#define MAX_ITERATIONS (5)
+#define THETA STANDARD_DEVIATION_THRESHHOLD
 
 #define STARTING_LOCATION (0)
-#define MOVEMENT_TICKS (10)
+#define MOVEMENT_TICKS (20.0)
 
-int checkarg (int argc, char *argv[], block_layout_t *block);
+int check_args (int argc, char *argv[], block_layout_t *block);
 
 int main(int argc, char *argv[]){
 	srand(RAND_SEED);
 
 	block_layout_t layout;
 
-	int check = checkarg(argc,argv, &layout);
+	int check = check_args(argc,argv, &layout);
 	if(check == -1){
 		return 0;
 	}
-
-
 	print_block_art(layout);
 
-    particle_t particle_array[NUM_PARTICLES];
-    init_particle_array(particle_array);
+	sim_input_t sim_input;
+	sim_input.layout = layout;
+	sim_input.max_iterations = MAX_ITERATIONS;
+	sim_input.movement_ticks = MOVEMENT_TICKS;
+	sim_input.starting_location = STARTING_LOCATION;
+	sim_input.std_dev_threshhold = STANDARD_DEVIATION_THRESHHOLD;
 
-	for (int i_sim = 0; i_sim < NUM_SIMULATIONS; i_sim++){
-		float end_location = -1;
-		float end_guess = -1;
+	sim_output_t sim_output = simulate(sim_input);
 
-
-		float location = STARTING_LOCATION;
-		for (int i = 0; i < MAX_ITERATIONS; i++){
-			u08 prox_reading = generate_prox_value(layout, location);
-			// printf("Read physical sensor value %d from location %4.1f\n", prox_reading, location);
-
-			run_motion_model(particle_array, MOVEMENT_TICKS);
-			recalculate_weights(layout, particle_array, prox_reading);
-			resample_particles(layout, particle_array);
-
-			float avg = -1.0;
-			float std_dev = compute_std_deviation(particle_array, &avg);
-			if (std_dev < STANDARD_DEVIATION){
-				//  Localitization complete
-				// print_particle_array(particle_array);
-				printf("\tLocalized at %4.1f after %d iterations with standard deviation of %3.1f\n", avg, i, std_dev);
-				
-				end_location = location;
-				end_guess = avg;
-				break;
-			}
-			if (i >= MAX_ITERATIONS - 1){
-				// Reached max iterations
-				print_particle_array(particle_array);
-				printf("FAILED to localize after %d iterations with standard deviation of %3.1f for avg at %4.1f \n", i, std_dev, avg);
-				
-				end_location = location;
-				end_guess = avg;
-				break;
-			}else{
-				// Continue simulation
-				// printf("Iteration: %d, continuing. Standard deviation of %3.1f for avg at %4.1f \n\n", i + 1, std_dev, avg);
-				location = increment_location(location, MOVEMENT_TICKS);
-			}
-		}
-	if (abs(end_guess - end_location) < STANDARD_DEVIATION){
-		printf("SUCCESS: ");
-	}
-	else{
-		printf("\t");
-	}
-	printf("Sim: %4d\tGuess: %4.1f, actual: %4.1f\n", i_sim + 1, end_guess, end_location);
+	if(is_success(sim_output, THETA)){
+		printf("SUCCESS:\tstd dev: %4.1f, Guess: %4.1f, actual: %4.1f, iterations: %d\n",
+			   sim_output.std_dev, sim_output.end_guess, sim_output.location, sim_output.iterations);
 	}
 }
 
 /* checks for correct number of arguments */
-int checkarg (int argc, char *argv[], block_layout_t *block){
+int check_args (int argc, char *argv[], block_layout_t *block){
 	//Check argument length
 	if(argc < 6){
 		printf("usage: simulation [block num (3-5)] [target block (1-block num)] [block positon (1)] ... [block positon (block num)]\n");
