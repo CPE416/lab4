@@ -66,6 +66,14 @@ sim_output_t simulate(sim_input_t sim_input){
         recalculate_weights(layout, particle_array, prox_reading);
         resample_particles(layout, particle_array);
 
+        //////
+        printf("\n");
+        print_particle_array(particle_array);
+        printf("\n");
+        printf("Location: %4.1f\n", sim_out.location);
+        printf("\n");
+        //////
+
         sim_out.std_dev = compute_std_deviation(particle_array, &sim_out.end_guess);
         if (sim_out.std_dev < std_dev_threshhold){
             //  Localitization complete
@@ -75,9 +83,9 @@ sim_output_t simulate(sim_input_t sim_input){
         }
         if (sim_out.iterations >= max_iterations - 1){
             // Reached max iterations
-            // print_particle_array(particle_array);
-            // printf("FAILED to localize after %d iterations with standard deviation of %3.1f for avg at %4.1f \n",
-            //        sim_out.iterations, sim_out.std_dev, sim_out.end_guess);
+            print_particle_array(particle_array);
+            printf("FAILED to localize after %d iterations with standard deviation of %3.1f for avg at %4.1f \n",
+                   sim_out.iterations, sim_out.std_dev, sim_out.end_guess);
         }else{
             // Continue simulation
             printf("Iteration: %d, continuing. Standard deviation of %3.1f, guess: %4.1f, actual: %4.1f\n", 
