@@ -14,16 +14,18 @@
 #define RAND_SEED (time(NULL))
 
 #define STANDARD_DEVIATION (2.0 * BLOCK_FUDGE_FACTOR)
-#define MAX_ITERATIONS (100000)
-#define NUM_SIMULATIONS (200)
+#define MAX_ITERATIONS (2)
+#define NUM_SIMULATIONS (1)
 
 #define STARTING_LOCATION (0)
-#define MOVEMENT_TICKS (10)
+#define MOVEMENT_TICKS (20)
 
 int checkarg (int argc, char *argv[], block_layout_t *block);
 
 int main(int argc, char *argv[]){
-	srand(RAND_SEED);
+	time_t t;
+	srand((unsigned) time(&t));
+	//srand(RAND_SEED);
 
 	block_layout_t layout;
 
@@ -51,6 +53,14 @@ int main(int argc, char *argv[]){
 			run_motion_model(particle_array, MOVEMENT_TICKS);
 			recalculate_weights(layout, particle_array, prox_reading);
 			resample_particles(layout, particle_array);
+
+			//////
+    		printf("\n");
+    		print_particle_array(&particle_array[0]);
+    		printf("\n");
+    		printf("%f\n", location);
+    		printf("\n");
+    		//////
 
 			float avg = -1.0;
 			float std_dev = compute_std_deviation(particle_array, &avg);
