@@ -17,7 +17,7 @@
 #define THETA STANDARD_DEVIATION_THRESHHOLD
 
 #define STARTING_LOCATION (0)
-#define MOVEMENT_TICKS (17.0)
+#define MOVEMENT_TICKS (24.0)
 
 int check_args (int argc, char *argv[], block_layout_t *block);
 

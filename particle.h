@@ -19,7 +19,7 @@
 #define RAND (((float) rand()) / (float) RAND_MAX)
 #define RANDOM_PARTICLE_POS ((360.0 * rand()) / RAND_MAX)
 
-#include "sim.h"
+//#include "sim.h"
 
 typedef struct {
     float position;
@@ -69,7 +69,7 @@ float generate_gaussian_value(){
     return GAUSSIAN_NOISE_FACTOR * root * cosine;
 }
 
-void run_motion_model(particle_t *particle_array, int ticks){
+void run_motion_model(particle_t *particle_array, float ticks){
     float degrees = ticks;
     for (int i = 0; i < NUM_PARTICLES; i++){
         float noise = generate_gaussian_value();
@@ -167,6 +167,20 @@ void resample_particles(block_layout_t layout, particle_t *old_array){
     }
 
     copy_particle_array(new_array, old_array);
+}
+
+float compute_std_deviation(particle_t *particle_array, float *avg){
+    float sum = 0;
+    float std_dev = 0;
+    for (int i = 0; i < NUM_PARTICLES; i++){
+        sum += particle_array[i].position;
+    }
+    float mean = sum / NUM_PARTICLES;
+    for(int j = 0; j < NUM_PARTICLES; j++){ 
+        std_dev += pow(particle_array[j].position - mean, 2);
+    }
+    *avg = mean;
+    return sqrt(std_dev/NUM_PARTICLES);
 }
 
 #endif

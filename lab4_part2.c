@@ -11,18 +11,23 @@
 // Left 20
 
 #include <stdio.h>
+#include <math.h>
 
 #include "delay.h"
 #include "hardware.h"
 #include "line_follow_pid.h"
 #include "block_layout.h"
 #include "encoder.h"
+#include "particle.h"
 
 // Settings
 #define DELAY_MS (100) // Delay time for control loop
 #define DRIVE_FOR_ENCODER_COUNT (15)
+#define FULL_RING_ENCODER_COUNT (480)
 #define NUM_PARTICLES (100)
 #define DISTANCE_SENSOR (5)
+#define STD_DEVIATION_THRESHOLD (10)
+#define RAND_SEED (10)
 
 
 u08 set_mode(u08 mode, int *flag);
@@ -38,6 +43,7 @@ void print_num_block(u08 num);
 void print_block_info(block_layout_t layout);
 void print_block_positions(block_layout_t layout);
 void print_position_block(int num, int count);
+void move_distance_on_line(line_data_t line_data, motor_command_t motors);
 u08 get_target_block(block_layout_t layout);
 u08 get_num_block();
 int get_position();
@@ -110,13 +116,16 @@ int main(void)
 
     //Loop until finished
     while (1){
-        
         move_distance_on_line(line_data, motors);
-        run_motion_model(particle_array, DRIVE_FOR_ENCODER_COUNT);
-        distance_reading = analog(DISTANCE_SENSOR);
+        float normalized_distance = FULL_RING_ENCODER_COUNT/DRIVE_FOR_ENCODER_COUNT;
+        run_motion_model(particle_array, normalized_distance);
+        u08 distance_reading = analog(DISTANCE_SENSOR);
         recalculate_weights(layout, particle_array, distance_reading);
         resample_particles(layout, particle_array);
         std_dev = compute_std_deviation(&particle_array[0], &average_position);
+        if(std_dev < STD_DEVIATION_THRESHOLD){
+
+        }
     }
 }
 
