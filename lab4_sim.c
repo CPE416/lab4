@@ -12,12 +12,12 @@
 
 #define RAND_SEED (time(NULL))
 
-#define STANDARD_DEVIATION_THRESHHOLD (2.0 * BLOCK_FUDGE_FACTOR)
-#define MAX_ITERATIONS (2)
+#define STANDARD_DEVIATION_THRESHHOLD (1.0 * BLOCK_FUDGE_FACTOR)
+#define MAX_ITERATIONS (50)
 #define THETA STANDARD_DEVIATION_THRESHHOLD
 
 #define STARTING_LOCATION (0)
-#define MOVEMENT_TICKS (20.0)
+#define MOVEMENT_TICKS (17.0)
 
 int check_args (int argc, char *argv[], block_layout_t *block);
 

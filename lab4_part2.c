@@ -16,10 +16,14 @@
 #include "hardware.h"
 #include "line_follow_pid.h"
 #include "block_layout.h"
+#include "encoder.h"
 
 // Settings
-#define DELAY_MS 100 // Delay time for control loop
-#define DRIVE_FOR_ENCODER_COUNT 15
+#define DELAY_MS (100) // Delay time for control loop
+#define DRIVE_FOR_ENCODER_COUNT (15)
+#define NUM_PARTICLES (100)
+#define DISTANCE_SENSOR (5)
+
 
 u08 set_mode(u08 mode, int *flag);
 void print_data(line_data_t sensor, int count);
@@ -49,11 +53,14 @@ int main(void)
     srand(RAND_SEED);
     particle_t particle_array[NUM_PARTICLES];
     init_particle_array(particle_array);
+    float std_dev;
+    float average_position;
     
-    //line_data_t line_data;
-    //motor_command_t motors;
-    //motors.left = 0;
-    //motors.right = 0;
+    //Motor Variables
+    motor_command_t motors;
+    line_data_t line_data;
+    init_encoder();
+
     halt();
 
 
@@ -87,16 +94,41 @@ int main(void)
 
     //Print User input
     print_block_info(layout);
-    delay_ms(1000);
+    delay_ms(2000);
     print_block_positions(layout);
-    delay_ms(1000);
+    delay_ms(2000);
+
+    clear_screen();
+    print_string("Press 2");
+    lcd_cursor(0, 1);
+    print_string("Start");
+
+    //Button Press Before Start
+    while((get_btn() == 0) && (get_btn2() == 0)){
+        delay_ms(1);
+    }
 
     //Loop until finished
     while (1){
-
+        
+        move_distance_on_line(line_data, motors);
+        run_motion_model(particle_array, DRIVE_FOR_ENCODER_COUNT);
+        distance_reading = analog(DISTANCE_SENSOR);
+        recalculate_weights(layout, particle_array, distance_reading);
+        resample_particles(layout, particle_array);
+        std_dev = compute_std_deviation(&particle_array[0], &average_position);
     }
 }
 
+void move_distance_on_line(line_data_t line_data, motor_command_t motors){
+    while(right_encoder < DRIVE_FOR_ENCODER_COUNT){
+        line_data = read_line_sensor();
+        motors = compute_proportional(line_data.left, line_data.right);
+        set_motors(motors);
+    }
+    halt();
+    reset_encoders();
+}
 
 
 //Choose Number of Blocks

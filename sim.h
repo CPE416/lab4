@@ -83,7 +83,7 @@ sim_output_t simulate(sim_input_t sim_input){
         }
         if (sim_out.iterations >= max_iterations - 1){
             // Reached max iterations
-            print_particle_array(particle_array);
+            // print_particle_array(particle_array);
             printf("FAILED to localize after %d iterations with standard deviation of %3.1f for avg at %4.1f \n",
                    sim_out.iterations, sim_out.std_dev, sim_out.end_guess);
         }else{
@@ -91,6 +91,7 @@ sim_output_t simulate(sim_input_t sim_input){
             printf("Iteration: %d, continuing. Standard deviation of %3.1f, guess: %4.1f, actual: %4.1f\n", 
                    sim_out.iterations, sim_out.std_dev, sim_out.end_guess, sim_out.location);
             sim_out.location = increment_location(sim_out.location, movement_ticks);
+            printf("New Location: %f\n", sim_out.location);
         }
     }
     return sim_out;
