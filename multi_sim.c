@@ -8,9 +8,9 @@
 
 #define RAND_SEED (time(NULL))
 
-#define STANDARD_DEVIATION_THRESHHOLD (2.0 * BLOCK_FUDGE_FACTOR)
-#define MAX_ITERATIONS (10000)
-#define NUM_SIMULATIONS (20)
+#define STANDARD_DEVIATION_THRESHHOLD (1.5 * BLOCK_FUDGE_FACTOR)
+#define MAX_ITERATIONS (10)
+#define NUM_SIMULATIONS (1000)
 #define THETA (STANDARD_DEVIATION_THRESHHOLD)
 
 #define STARTING_LOCATION (0)
@@ -20,6 +20,8 @@ int check_args (int argc, char *argv[], block_layout_t *block);
 
 int main(int argc, char *argv[]){
 	srand(RAND_SEED);
+
+	int num_successes = 0;
 
 	block_layout_t layout;
 
@@ -40,14 +42,18 @@ int main(int argc, char *argv[]){
 		
 		sim_output_t sim_output = simulate(sim_input);
 
+		float dif = abs(sim_output.end_guess - sim_output.location);
 		if(is_success(sim_output, THETA)){
-			printf("SUCCESS: Sim: %4d\tstd dev: %4.1f, Guess: %4.1f, actual: %4.1f, iterations: %d\n",
-			       i_sim + 1, sim_output.std_dev, sim_output.end_guess, sim_output.location, sim_output.iterations);
+			num_successes ++;
+			printf("SUCCESS: Sim: %4d\tdif: %3.0f\tstd dev: %4.1f\tguess: %4.1f\tactual: %4.1f\titerations: %d\n",
+			       i_sim + 1, dif, sim_output.std_dev, sim_output.end_guess, sim_output.location, sim_output.iterations);
 		}else{
-			printf("FAIL:    Sim: %4d\tstd dev: %4.1f, Guess: %4.1f, actual: %4.1f, iterations: %d\n",
-			       i_sim + 1, sim_output.std_dev, sim_output.end_guess, sim_output.location, sim_output.iterations);
+			printf("FAIL:    Sim: %4d\tdif: %3.0f\tstd dev: %4.1f\tguess: %4.1f\tactual: %4.1f\titerations: %d\n",
+			       i_sim + 1, dif, sim_output.std_dev, sim_output.end_guess, sim_output.location, sim_output.iterations);
 		}
 	}
+	float success_rate = (100.0 * num_successes) / ((float) NUM_SIMULATIONS);
+	printf("\nSuccess rate: %d / %d = %4.1f%%\n", num_successes, NUM_SIMULATIONS, success_rate);
 }
 
 /* checks for correct number of arguments */
