@@ -19,8 +19,6 @@
 #define RAND (((float) rand()) / (float) RAND_MAX)
 #define RANDOM_PARTICLE_POS ((360.0 * rand()) / RAND_MAX)
 
-//#include "sim.h"
-
 typedef struct {
     float position;
     float weight;
