@@ -4,6 +4,7 @@
 #ifndef GLOBALS_H
 #define GLOBALS_H
 
+#define U08_DEF
 typedef unsigned char u08;
 typedef unsigned int u16;
 
