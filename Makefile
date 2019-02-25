@@ -20,7 +20,7 @@ SOURCE_LIB = $(wildcard $(BOARD_LIB)/*.c)
 CLOCK_RATE = 16000000L
 
 CC = avr-gcc
-CFLAGS = -Wall -Os -pipe -std=c99 -pedantic
+CFLAGS = -Wall -O2 -pipe -std=c99 -pedantic
 BFLAGS = -I$(BOARD_LIB) -DF_CPU=$(CLOCK_RATE) -mmcu=atmega645a $(CFLAGS)
 
 MAC_DEVICE = /dev/tty.usbmodem14201
