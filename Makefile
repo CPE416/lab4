@@ -20,7 +20,7 @@ SOURCE_LIB = $(wildcard $(BOARD_LIB)/*.c)
 CLOCK_RATE = 16000000L
 
 CC = avr-gcc
-CFLAGS = -Wall -O2 -pipe -std=c99 -pedantic
+CFLAGS = -Wall -Os -pipe -std=c99 -pedantic
 BFLAGS = -I$(BOARD_LIB) -DF_CPU=$(CLOCK_RATE) -mmcu=atmega645a $(CFLAGS)
 
 MAC_DEVICE = /dev/tty.usbmodem14201
@@ -83,6 +83,20 @@ prep:
 	avr-objcopy -O ihex main.elf main.hex
 	avr-size main.elf
 	make program
+
+compiler_compare: lab4_part2.c $(wildcard $(BOARD_LIB)/*.c)
+	@echo "-0s"
+	@avr-gcc -Wall -Os -pipe -std=c99 -pedantic -I$(BOARD_LIB) -DF_CPU=$(CLOCK_RATE) -mmcu=atmega645a -o main.elf lab4_part2.c $(wildcard $(BOARD_LIB)/*.c)
+	avr-size main.elf
+	@echo "\n-01"
+	@avr-gcc -Wall -O1 -pipe -std=c99 -pedantic -I$(BOARD_LIB) -DF_CPU=$(CLOCK_RATE) -mmcu=atmega645a -o main.elf lab4_part2.c $(wildcard $(BOARD_LIB)/*.c)
+	avr-size main.elf
+	@echo "\n-02"
+	@avr-gcc -Wall -O2 -pipe -std=c99 -pedantic -I$(BOARD_LIB) -DF_CPU=$(CLOCK_RATE) -mmcu=atmega645a -o main.elf lab4_part2.c $(wildcard $(BOARD_LIB)/*.c)
+	avr-size main.elf
+	@echo "\n-03"
+	@avr-gcc -Wall -O3 -pipe -std=c99 -pedantic -I$(BOARD_LIB) -DF_CPU=$(CLOCK_RATE) -mmcu=atmega645a -o main.elf lab4_part2.c $(wildcard $(BOARD_LIB)/*.c)
+	avr-size main.elf
 
 # Select platform for programming
 ifeq ($(UNAME),Linux)
