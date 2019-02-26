@@ -24,20 +24,15 @@
 // Settings
 #define DELAY_MS (100) // Delay time for control loop
 // #define DRIVE_FOR_ENCODER_COUNT (15)
-#define MOVEMENT_TICKS (5)
+#define MOVEMENT_TICKS (10)
 
 #define DISTANCE_SENSOR (5)
 
-#define STD_DEVIATION_THRESHOLD (20.0)
+#define STD_DEVIATION_THRESHOLD (30.0)
 #define RAND_SEED (10)
 
 
 u08 set_mode(u08 mode, int *flag);
-void print_data(line_data_t sensor, int count);
-void print_training(int count);
-void print_training2(int count);
-void print_training3(int count1, int count2);
-void print_training4(int count1, int count2);
 
 void read_accel(u08 *horizontal);
 void print_target_block(u08 num);
@@ -288,47 +283,3 @@ void read_accel(u08 *horizontal)
     // Directions when looking at the screen
     horizontal[0] = get_accel_y(); // Left and right
 }
-
-// void print_data(line_data_t sensor, int count){
-//     clear_screen();
-//     print_string("Data");
-//     lcd_cursor(4, 0);
-//     print_num(count);
-//     lcd_cursor(0, 1);
-//     print_num(sensor.left);
-//     lcd_cursor(4, 1);
-//     print_num(sensor.right);
-// }
-
-// void print_training(int count){
-//     clear_screen();
-//     print_string("Training");
-//     lcd_cursor(0, 1);
-//     print_num(count);
-// }
-// void print_training2(int count){
-//     clear_screen();
-//     print_string("Training");
-//     lcd_cursor(0, 1);
-//     print_num(count);
-//     lcd_cursor(4, 1);
-//     print_string("a");
-// }
-
-// void print_training3(int count1, int count2){
-//     clear_screen();
-//     print_string("Training");
-//     lcd_cursor(0, 1);
-//     print_num(count1);
-//     lcd_cursor(4, 1);
-//     print_num(count2);
-// }
-
-// void print_training4(int count1, int count2){
-//     clear_screen();
-//     print_string("Neural");
-//     lcd_cursor(0, 1);
-//     print_num(count1);
-//     lcd_cursor(4, 1);
-//     print_num(count2);
-// }
