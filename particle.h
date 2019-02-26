@@ -15,7 +15,7 @@
 #define NUM_PARTICLES (100)
 #define RATIO_KEEP_PARTICLES (0.95)
 
-#define TICKS_PER_DEGREE (2.0)
+// #define TICKS_PER_DEGREE (2.0)
 #define RAND (((float) rand()) / (float) RAND_MAX)
 #define RANDOM_PARTICLE_POS ((360.0 * rand()) / RAND_MAX)
 
@@ -54,10 +54,6 @@ void init_particle_array(particle_t *particle_array){
     }
 }
 
-float ticks_to_degrees(int ticks){
-    return ticks / TICKS_PER_DEGREE;
-}
-
 float generate_gaussian_value(){
     float u1 = RAND;
     float u2 = RAND;
@@ -67,8 +63,7 @@ float generate_gaussian_value(){
     return GAUSSIAN_NOISE_FACTOR * root * cosine;
 }
 
-void run_motion_model(particle_t *particle_array, float ticks){
-    float degrees = ticks;
+void run_motion_model(particle_t *particle_array, float degrees){
     for (int i = 0; i < NUM_PARTICLES; i++){
         float noise = generate_gaussian_value();
         // printf("Moving particle from %5.1f by %f plus %f\n", particle_array[i].position, degrees, noise);

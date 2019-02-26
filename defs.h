@@ -1,7 +1,10 @@
 #ifndef DEFS_H
 #define DEFS_H
 
+#ifndef U08_DEF
+#define U08_DEF
 typedef unsigned char u08;
+#endif
 
 #define TRUE (1)
 #define FALSE (0)

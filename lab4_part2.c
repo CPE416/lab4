@@ -12,6 +12,7 @@
 
 #include <stdio.h>
 #include <math.h>
+#include <time.h>
 
 #include "delay.h"
 #include "hardware.h"
@@ -22,11 +23,13 @@
 
 // Settings
 #define DELAY_MS (100) // Delay time for control loop
-#define DRIVE_FOR_ENCODER_COUNT (15)
-#define FULL_RING_ENCODER_COUNT (480)
+// #define DRIVE_FOR_ENCODER_COUNT (15)
+#define MOVEMENT_TICKS (15)
+
 #define NUM_PARTICLES (100)
 #define DISTANCE_SENSOR (5)
-#define STD_DEVIATION_THRESHOLD (30)
+
+#define STD_DEVIATION_THRESHOLD (30.0)
 #define RAND_SEED (10)
 
 
@@ -43,9 +46,9 @@ void print_num_block(u08 num);
 void print_block_info(block_layout_t layout);
 void print_block_positions(block_layout_t layout);
 void print_position_block(int num, int count);
-void move_distance_on_line(line_data_t line_data, motor_command_t motors);
+
+void move_distance_on_line(int ticks);
 float calc_distance_from_target(block_layout_t layout, float average_position);
-void drive_for_encoder(line_data_t line_data, motor_command_t motors, float encoder_count);
 u08 get_target_block(block_layout_t layout);
 u08 get_num_block();
 int get_position();
@@ -64,13 +67,8 @@ int main(void)
     float std_dev;
     float average_position;
     
-    //Motor Variables
-    motor_command_t motors;
-    line_data_t line_data;
     init_encoder();
-
     halt();
-
 
     clear_screen();
     print_string("Part 2");
@@ -118,11 +116,11 @@ int main(void)
 
     //Loop until finished
     while (1){
-        move_distance_on_line(line_data, motors);
-        float normalized_distance = (FULL_RING_ENCODER_COUNT/DRIVE_FOR_ENCODER_COUNT)*360;
-        run_motion_model(particle_array, normalized_distance);
-        u08 distance_reading = analog(DISTANCE_SENSOR);
-        recalculate_weights(layout, particle_array, distance_reading);
+        move_distance_on_line(MOVEMENT_TICKS);
+        float movement_degrees = ticks_to_degrees(MOVEMENT_TICKS);
+        run_motion_model(particle_array, movement_degrees);
+        u08 prox_reading = analog(DISTANCE_SENSOR);
+        recalculate_weights(layout, particle_array, prox_reading);
         resample_particles(layout, particle_array);
         std_dev = compute_std_deviation(&particle_array[0], &average_position);
         char s[10];
@@ -131,14 +129,27 @@ int main(void)
         if(std_dev < STD_DEVIATION_THRESHOLD){
             float target_distance = calc_distance_from_target(layout, average_position);
             float encoder_distance = (target_distance/360) * FULL_RING_ENCODER_COUNT;
-            drive_for_encoder(line_data, motors, encoder_distance);
+            move_distance_on_line(encoder_distance);
             rotate_90();
-            motor(MOTOR_LEFT, 30);
-            motor(MOTOR_RIGHT, 30);
+            forward(100);
             halt();
-            return 1;
+            return 0;
         }
     }
+}
+
+void move_distance_on_line(int ticks){
+    //Motor Variables
+    motor_command_t motors;
+    line_data_t line_data;
+
+    while(right_encoder < ticks){ 
+        line_data = read_line_sensor();
+        motors = compute_proportional(line_data.left, line_data.right);
+        set_motors(motors);
+    }
+    halt();
+    reset_encoders();
 }
 
 float calc_distance_from_target(block_layout_t layout, float average_position){
@@ -152,26 +163,15 @@ float calc_distance_from_target(block_layout_t layout, float average_position){
     return target_distance;
 }
 
-void drive_for_encoder(line_data_t line_data, motor_command_t motors, float encoder_count){
-    while(right_encoder < encoder_count){
-        line_data = read_line_sensor();
-        motors = compute_proportional(line_data.left, line_data.right);
-        set_motors(motors);
-    }
-    halt();
-    reset_encoders();
-}
-
-void move_distance_on_line(line_data_t line_data, motor_command_t motors){
-    while(right_encoder < DRIVE_FOR_ENCODER_COUNT){
-        line_data = read_line_sensor();
-        motors = compute_proportional(line_data.left, line_data.right);
-        set_motors(motors);
-    }
-    halt();
-    reset_encoders();
-}
-
+// void drive_for_encoder(line_data_t line_data, motor_command_t motors, float encoder_count){
+//     while(right_encoder < encoder_count){
+//         line_data = read_line_sensor();
+//         motors = compute_proportional(line_data.left, line_data.right);
+//         set_motors(motors);
+//     }
+//     halt();
+//     reset_encoders();
+// }  
 
 //Choose Number of Blocks
 u08 get_num_block(){
@@ -291,46 +291,46 @@ void read_accel(u08 *horizontal)
     horizontal[0] = get_accel_y(); // Left and right
 }
 
-void print_data(line_data_t sensor, int count){
-    clear_screen();
-    print_string("Data");
-    lcd_cursor(4, 0);
-    print_num(count);
-    lcd_cursor(0, 1);
-    print_num(sensor.left);
-    lcd_cursor(4, 1);
-    print_num(sensor.right);
-}
+// void print_data(line_data_t sensor, int count){
+//     clear_screen();
+//     print_string("Data");
+//     lcd_cursor(4, 0);
+//     print_num(count);
+//     lcd_cursor(0, 1);
+//     print_num(sensor.left);
+//     lcd_cursor(4, 1);
+//     print_num(sensor.right);
+// }
 
-void print_training(int count){
-    clear_screen();
-    print_string("Training");
-    lcd_cursor(0, 1);
-    print_num(count);
-}
-void print_training2(int count){
-    clear_screen();
-    print_string("Training");
-    lcd_cursor(0, 1);
-    print_num(count);
-    lcd_cursor(4, 1);
-    print_string("a");
-}
+// void print_training(int count){
+//     clear_screen();
+//     print_string("Training");
+//     lcd_cursor(0, 1);
+//     print_num(count);
+// }
+// void print_training2(int count){
+//     clear_screen();
+//     print_string("Training");
+//     lcd_cursor(0, 1);
+//     print_num(count);
+//     lcd_cursor(4, 1);
+//     print_string("a");
+// }
 
-void print_training3(int count1, int count2){
-    clear_screen();
-    print_string("Training");
-    lcd_cursor(0, 1);
-    print_num(count1);
-    lcd_cursor(4, 1);
-    print_num(count2);
-}
+// void print_training3(int count1, int count2){
+//     clear_screen();
+//     print_string("Training");
+//     lcd_cursor(0, 1);
+//     print_num(count1);
+//     lcd_cursor(4, 1);
+//     print_num(count2);
+// }
 
-void print_training4(int count1, int count2){
-    clear_screen();
-    print_string("Neural");
-    lcd_cursor(0, 1);
-    print_num(count1);
-    lcd_cursor(4, 1);
-    print_num(count2);
-}
+// void print_training4(int count1, int count2){
+//     clear_screen();
+//     print_string("Neural");
+//     lcd_cursor(0, 1);
+//     print_num(count1);
+//     lcd_cursor(4, 1);
+//     print_num(count2);
+// }
