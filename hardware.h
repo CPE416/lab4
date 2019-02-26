@@ -24,8 +24,10 @@ void led_low(u08 num){
 void print_std_dev_pos(float std_dev, float pos){
     clear_screen();
     lcd_cursor(0, 0);
-    print_num((int)std_dev);
+    print_string("s: ");
+    print_num((int) std_dev);
     lcd_cursor(0, 1);
+    print_string("p: ");
     print_num((int) pos);
 }
 

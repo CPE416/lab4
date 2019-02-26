@@ -24,7 +24,7 @@
 // Settings
 #define DELAY_MS (100) // Delay time for control loop
 // #define DRIVE_FOR_ENCODER_COUNT (15)
-#define MOVEMENT_TICKS (10)
+#define MOVEMENT_TICKS (8)
 
 #define DISTANCE_SENSOR (5)
 
@@ -117,11 +117,19 @@ int main(void)
         u08 prox_reading = analog(DISTANCE_SENSOR);
         recalculate_weights(layout, particle_array, prox_reading);
         resample_particles(layout, particle_array);
+
         std_dev = compute_std_deviation(particle_array, &average_position);
         print_std_dev_pos(std_dev, average_position);
+
         if((total_ticks > FULL_RING_ENCODER_COUNT) && (std_dev < STD_DEVIATION_THRESHOLD)){
             float target_distance = calc_distance_from_target(layout, average_position);
             float encoder_distance = degrees_to_ticks(target_distance);
+            
+            clear_screen();
+            print_string("Distance:");
+            lcd_cursor(0, 1);
+            print_num(encoder_distance);
+
             move_distance_on_line(encoder_distance);
             rotate_90();
             forward(100);

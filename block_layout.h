@@ -20,7 +20,7 @@
 #define B ('B')
 
 #define MAX_BLOCKS (5)
-#define BLOCK_FUDGE_FACTOR (15.0)
+#define BLOCK_FUDGE_FACTOR (7.0)
 
 typedef struct { 
     u08 num_blocks;             // 3 to 5 blocks

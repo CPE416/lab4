@@ -5,7 +5,7 @@
 #include "delay.h"
 #include "hardware.h"
 
-#define FULL_RING_ENCODER_COUNT (480)
+#define FULL_RING_ENCODER_COUNT (490)
 #define TICKS_PER_DEGREE (360.0 / FULL_RING_ENCODER_COUNT) 
 #define DEGREES_PER_TICK (FULL_RING_ENCODER_COUNT / 360.0) 
 
@@ -18,8 +18,8 @@ float ticks_to_degrees(int ticks){
     return ((float) ticks) * TICKS_PER_DEGREE;
 }
 
-int degrees_to_ticks(float degrees){ 
-    return (int)(degrees / DEGREES_PER_TICK);
+float degrees_to_ticks(float degrees){ 
+    return (float)(degrees / TICKS_PER_DEGREE);
 }
 
 void reset_left_encoder(){
