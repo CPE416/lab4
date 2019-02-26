@@ -12,7 +12,7 @@
 
 #define GAUSSIAN_NOISE_FACTOR (1.0)
 
-#define NUM_PARTICLES (1000)
+#define NUM_PARTICLES (200)
 #define RATIO_KEEP_PARTICLES (0.90)
 
 // #define TICKS_PER_DEGREE (2.0)
