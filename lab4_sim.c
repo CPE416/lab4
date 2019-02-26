@@ -12,12 +12,12 @@
 
 #define RAND_SEED (time(NULL))
 
-#define STANDARD_DEVIATION_THRESHHOLD (1.0 * BLOCK_FUDGE_FACTOR)
+#define STANDARD_DEVIATION_THRESHHOLD (30.0)
 #define MAX_ITERATIONS (50)
 #define THETA STANDARD_DEVIATION_THRESHHOLD
 
 #define STARTING_LOCATION (0)
-#define MOVEMENT_TICKS (24.0)
+#define MOVEMENT_TICKS (8.0)
 
 int check_args (int argc, char *argv[], block_layout_t *block);
 
@@ -43,6 +43,9 @@ int main(int argc, char *argv[]){
 
 	if(is_success(sim_output, THETA)){
 		printf("SUCCESS:\tstd dev: %4.1f, Guess: %4.1f, actual: %4.1f, iterations: %d\n",
+			   sim_output.std_dev, sim_output.end_guess, sim_output.location, sim_output.iterations);
+	}else{
+		printf("Failure:\tstd dev: %4.1f, Guess: %4.1f, actual: %4.1f, iterations: %d\n",
 			   sim_output.std_dev, sim_output.end_guess, sim_output.location, sim_output.iterations);
 	}
 }
@@ -77,7 +80,7 @@ int check_args (int argc, char *argv[], block_layout_t *block){
 			return -1;
 		}
 	}
-	print_block_layout(block);
+	// print_block_layout(block);
 	return 1;
 }
 
