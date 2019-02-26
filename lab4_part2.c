@@ -24,12 +24,12 @@
 // Settings
 #define DELAY_MS (100) // Delay time for control loop
 // #define DRIVE_FOR_ENCODER_COUNT (15)
-#define MOVEMENT_TICKS (15)
+#define MOVEMENT_TICKS (5)
 
 #define NUM_PARTICLES (100)
 #define DISTANCE_SENSOR (5)
 
-#define STD_DEVIATION_THRESHOLD (30.0)
+#define STD_DEVIATION_THRESHOLD (20.0)
 #define RAND_SEED (10)
 
 
@@ -66,7 +66,7 @@ int main(void)
     init_particle_array(particle_array);
     float std_dev;
     float average_position;
-    
+    int total_ticks = 0;
     init_encoder();
     halt();
 
@@ -117,16 +117,15 @@ int main(void)
     //Loop until finished
     while (1){
         move_distance_on_line(MOVEMENT_TICKS);
+        total_ticks += MOVEMENT_TICKS;
         float movement_degrees = ticks_to_degrees(MOVEMENT_TICKS);
         run_motion_model(particle_array, movement_degrees);
         u08 prox_reading = analog(DISTANCE_SENSOR);
         recalculate_weights(layout, particle_array, prox_reading);
         resample_particles(layout, particle_array);
         std_dev = compute_std_deviation(&particle_array[0], &average_position);
-        char s[10];
-        sprintf(s, "std_dev:%3.0f", std_dev);
-        print_string(s);
-        if(std_dev < STD_DEVIATION_THRESHOLD){
+        print_std_dev_pos(std_dev, average_position);
+        if((total_ticks > FULL_RING_ENCODER_COUNT) && (std_dev < STD_DEVIATION_THRESHOLD)){
             float target_distance = calc_distance_from_target(layout, average_position);
             float encoder_distance = (target_distance/360) * FULL_RING_ENCODER_COUNT;
             move_distance_on_line(encoder_distance);

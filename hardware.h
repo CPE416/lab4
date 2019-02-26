@@ -21,6 +21,14 @@ void led_low(u08 num){
 	digital_out(num, 0);
 }
 
+void print_std_dev_pos(float std_dev, float pos){
+    clear_screen();
+    lcd_cursor(0, 0);
+    print_num((int)std_dev);
+    lcd_cursor(0, 1);
+    print_num((int) pos);
+}
+
 light_data_t read_light_sensor(){
     light_data_t data;
     data.left = analog(LIGHT_SENSOR_PIN_LEFT);
