@@ -7,6 +7,7 @@
 
 #define FULL_RING_ENCODER_COUNT (480)
 #define TICKS_PER_DEGREE (360.0 / FULL_RING_ENCODER_COUNT) 
+#define DEGREES_PER_TICK (FULL_RING_ENCODER_COUNT / 360.0) 
 
 #define ROTATE_TICKS 32
 
@@ -14,7 +15,11 @@ volatile uint16_t left_encoder = 0;
 volatile uint16_t right_encoder = 0;
 
 float ticks_to_degrees(int ticks){
-    return ticks  / TICKS_PER_DEGREE;
+    return ((float) ticks) / TICKS_PER_DEGREE;
+}
+
+int degrees_to_ticks(float degrees){ 
+    return (int)(degrees / DEGREES_PER_TICK);
 }
 
 void reset_left_encoder(){
