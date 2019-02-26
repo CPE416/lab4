@@ -26,7 +26,7 @@
 #define FULL_RING_ENCODER_COUNT (480)
 #define NUM_PARTICLES (100)
 #define DISTANCE_SENSOR (5)
-#define STD_DEVIATION_THRESHOLD (10)
+#define STD_DEVIATION_THRESHOLD (30)
 #define RAND_SEED (10)
 
 
@@ -125,6 +125,9 @@ int main(void)
         recalculate_weights(layout, particle_array, distance_reading);
         resample_particles(layout, particle_array);
         std_dev = compute_std_deviation(&particle_array[0], &average_position);
+        char s[10];
+        sprintf(s, "std_dev:%3.0f", std_dev);
+        print_string(s);
         if(std_dev < STD_DEVIATION_THRESHOLD){
             float target_distance = calc_distance_from_target(layout, average_position);
             float encoder_distance = (target_distance/360) * FULL_RING_ENCODER_COUNT;
