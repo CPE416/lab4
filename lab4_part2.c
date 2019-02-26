@@ -111,9 +111,11 @@ int main(void)
     //Loop until finished
     while (1){
         move_distance_on_line(MOVEMENT_TICKS);
+
         total_ticks += MOVEMENT_TICKS;
         float movement_degrees = ticks_to_degrees(MOVEMENT_TICKS);
         run_motion_model(particle_array, movement_degrees);
+        
         u08 prox_reading = analog(DISTANCE_SENSOR);
         recalculate_weights(layout, particle_array, prox_reading);
         resample_particles(layout, particle_array);
