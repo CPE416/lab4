@@ -14,7 +14,7 @@ volatile uint16_t left_encoder = 0;
 volatile uint16_t right_encoder = 0;
 
 float ticks_to_degrees(int ticks){
-    return ticks  / TICKS_PER_DEGREE;
+    return ticks  * TICKS_PER_DEGREE;
 }
 
 void reset_left_encoder(){

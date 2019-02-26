@@ -24,12 +24,12 @@
 // Settings
 #define DELAY_MS (100) // Delay time for control loop
 // #define DRIVE_FOR_ENCODER_COUNT (15)
-#define MOVEMENT_TICKS (5)
+#define MOVEMENT_TICKS (10)
 
 #define NUM_PARTICLES (100)
 #define DISTANCE_SENSOR (5)
 
-#define STD_DEVIATION_THRESHOLD (20.0)
+#define STD_DEVIATION_THRESHOLD (30.0)
 #define RAND_SEED (10)
 
 
