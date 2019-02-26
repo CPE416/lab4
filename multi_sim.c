@@ -8,13 +8,13 @@
 
 #define RAND_SEED (time(NULL))
 
-#define STANDARD_DEVIATION_THRESHHOLD (1.5 * BLOCK_FUDGE_FACTOR)
-#define MAX_ITERATIONS (10)
+#define STANDARD_DEVIATION_THRESHHOLD (30.0)
+#define MAX_ITERATIONS (100)
 #define NUM_SIMULATIONS (1000)
 #define THETA (STANDARD_DEVIATION_THRESHHOLD)
 
-#define STARTING_LOCATION (0)
-#define MOVEMENT_TICKS (20.0)
+#define STARTING_LOCATION (360.0 * RAND)
+#define MOVEMENT_TICKS (15.0)
 
 int check_args (int argc, char *argv[], block_layout_t *block);
 
