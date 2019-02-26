@@ -13,7 +13,7 @@
 #define GAUSSIAN_NOISE_FACTOR (1.0)
 
 #define NUM_PARTICLES (150)
-#define RATIO_KEEP_PARTICLES (0.90)
+#define RATIO_KEEP_PARTICLES (0.95)
 
 // #define TICKS_PER_DEGREE (2.0)
 #define RAND (((float) rand()) / (float) RAND_MAX)
