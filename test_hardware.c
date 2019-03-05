@@ -24,6 +24,7 @@ void print_data(u08 count, u08 vals);
 void poll_distance(u08 pin_num);
 void poll_encoder(u08 pin_num);
 void print_distance_encoders(int sensor, int count1, int count2);
+void move_distance_on_line(int ticks);
 
 int main(void)
 {
@@ -99,6 +100,7 @@ int main(void)
 		line_data = read_line_sensor();
 		motors = compute_proportional(line_data.left, line_data.right);
 		set_motors(motors);
+		delay_ms(10);
 		if((get_btn() == 1) || (get_btn2() == 1)){
  	   	halt();
  	     delay_ms(500);
@@ -107,6 +109,15 @@ int main(void)
  	  	}
  	 }
 	}
+
+	// Test drive for
+	// init_encoder();
+	// while(1){
+	// 	move_distance_on_line(490);
+	// 	halt();
+	// 	delay_ms(5000);
+	// }
+	
 	
 
 	while(1){
@@ -169,4 +180,20 @@ void print_distance_encoders(int sensor, int count1, int count2){
     print_num(count1);
     lcd_cursor(4, 1);
     print_num(count2);
+}
+
+void move_distance_on_line(int ticks){
+    //Motor Variables
+    motor_command_t motors;
+    line_data_t line_data;
+
+    while(right_encoder < ticks){ 
+        line_data = read_line_sensor();
+        motors = compute_proportional(line_data.left, line_data.right);
+        set_motors(motors);
+        clear_screen();
+		print_num(right_encoder);
+    }
+    halt();
+    reset_encoders();
 }

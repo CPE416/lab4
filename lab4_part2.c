@@ -25,10 +25,11 @@
 #define DELAY_MS (100) // Delay time for control loop
 // #define DRIVE_FOR_ENCODER_COUNT (15)
 #define MOVEMENT_TICKS (8)
+#define ACTUAL_MOVEMENT_TICKS (12)
 
 #define DISTANCE_SENSOR (5)
 
-#define STD_DEVIATION_THRESHOLD (30.0)
+#define STD_DEVIATION_THRESHOLD (25.0)
 #define RAND_SEED (10)
 
 
@@ -115,7 +116,7 @@ int main(void)
         total_ticks += MOVEMENT_TICKS;
         float movement_degrees = ticks_to_degrees(MOVEMENT_TICKS);
         run_motion_model(particle_array, movement_degrees);
-        
+
         u08 prox_reading = analog(DISTANCE_SENSOR);
         recalculate_weights(layout, particle_array, prox_reading);
         resample_particles(layout, particle_array);
@@ -123,7 +124,7 @@ int main(void)
         std_dev = compute_std_deviation(particle_array, &average_position);
         print_std_dev_pos(std_dev, average_position);
 
-        if((total_ticks > FULL_RING_ENCODER_COUNT) && (std_dev < STD_DEVIATION_THRESHOLD)){
+        if((std_dev < STD_DEVIATION_THRESHOLD)){
             float target_distance = calc_distance_from_target(layout, average_position);
             float encoder_distance = degrees_to_ticks(target_distance);
             
@@ -146,7 +147,7 @@ void move_distance_on_line(int ticks){
     motor_command_t motors;
     line_data_t line_data;
 
-    while(right_encoder < ticks){ 
+    while(right_encoder < (ticks/2)){ 
         line_data = read_line_sensor();
         motors = compute_proportional(line_data.left, line_data.right);
         set_motors(motors);

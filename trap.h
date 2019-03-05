@@ -9,8 +9,8 @@
 
 // Probability Function for Space
 #define SPACE_VAL_A (0.0)
-#define SPACE_VAL_B (15.0) //(1.0)
-#define SPACE_VAL_C (35) //(40.0)
+#define SPACE_VAL_B (1.0) //(1.0)
+#define SPACE_VAL_C (50) //(40.0)
 #define SPACE_VAL_D (60.0)
 
 // Struct and Functions for the Trapezoid Probability Density Function
